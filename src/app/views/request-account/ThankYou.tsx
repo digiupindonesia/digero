@@ -12,7 +12,7 @@ export default function ThankYou() {
           {/* Isi, dibikin berjarak antar blok */}
           <div className="mt-10 space-y-12">
             <p className="text-lg leading-relaxed">
-              Terimakasih (username) sudah melakukan order topup dengan detail
+              Terimakasih (username) sudah melakukan Reuest Akun dengan detail
             </p>
 
             <div className="space-y-1 text-lg">

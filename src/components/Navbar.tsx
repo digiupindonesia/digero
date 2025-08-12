@@ -19,7 +19,7 @@ const links = [
   {
     Icon: BiCartDownload,
     text: "Order Topup",
-    path: "/order-topup",
+    path: "/topup",
   },
   {
     Icon: BiCartAdd,
