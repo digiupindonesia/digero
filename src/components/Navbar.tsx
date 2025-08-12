@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import NavLink from "./NavLink";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
@@ -6,6 +8,7 @@ import { BiCartAdd } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoExtensionPuzzleOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
+import { usePathname } from "next/navigation";
 
 const links = [
   {
@@ -30,28 +33,31 @@ const links = [
   },
   {
     Icon: IoExtensionPuzzleOutline,
-    text: "Setting",
-    path: "/setting",
+    text: "Settings",
+    path: "/settings",
   },
 ];
 
 export const Navbar = () => {
+  const pathname = usePathname();
+  console.log("Current Pathname:", pathname);
+  
   return (
     <>
-      <div className="bg-black text-white w-full fixed bottom-0 xl:w-72 xl:min-h-screen flex-col">
+      <div
+        className="bg-black text-white w-full fixed bottom-0 xl:fixed xl:top-0 xl:left-0 xl:w-72 xl:h-screen flex flex-col"
+      >
         <div
-          className="hidden xl:flex w-ful l h-32 bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url(/icon/icon.png)",
-          }}
-        ></div>
-        <nav className="flex xl:flex-col justify-between md:px-20 xl:p-5 2xl:p-10 h-full">
-          <div className="flex xl:flex-col gap-2">
+          className="hidden xl:flex w-full h-32 bg-center bg-no-repeat"
+          style={{ backgroundImage: "url(/icon/icon.png)" }}
+        />
+        <nav className="flex flex-1 flex-row xl:flex-col justify-between px-5 md:px-20 xl:p-5 2xl:p-10">
+          <div className="flex xl:flex-col flex-row gap-2">
             {links.map(({ Icon, text, path }) => (
-              <NavLink key={path} Icon={Icon} text={text} />
+              <NavLink key={path} path={path} Icon={Icon} text={text} active={pathname === path} />
             ))}
           </div>
-          <NavLink Icon={MdOutlineLogout} text="Logout" />
+          <NavLink path={"/logout"} Icon={MdOutlineLogout} text="Logout" />
         </nav>
       </div>
     </>
