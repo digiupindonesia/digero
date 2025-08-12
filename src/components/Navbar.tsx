@@ -38,9 +38,9 @@ const links = [
 export const Navbar = () => {
   return (
     <>
-      <div className="bg-black text-white w-full fixed xl:relative bottom-0 xl:w-72 xl:min-h-screen flex-col">
+      <div className="bg-black text-white w-full fixed bottom-0 xl:w-72 xl:min-h-screen flex-col">
         <div
-          className="hidden xl:flex w-full h-32 bg-center bg-no-repeat"
+          className="hidden xl:flex w-ful l h-32 bg-center bg-no-repeat"
           style={{
             backgroundImage: "url(/icon/icon.png)",
           }}

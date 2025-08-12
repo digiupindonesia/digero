@@ -16,6 +16,7 @@ import IconMandiri from "@/assets/img/mandiri.png";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { TbApi } from "react-icons/tb";
+import Textarea from "@/components/Textarea";
 
 const Page = () => {
   return (
@@ -78,14 +79,100 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="w-full xl:w-8/12 flex flex-col gap-2">
+          <div className="flex flex-col xl:flex-row gap-5">
+            <div className="w-full xl:w-6/12 flex flex-col gap-2">
+              <div className="flex gap-2">
+                <TbApi className="text-2xl" />
+                <p className="text-base font-normal">API Woowa</p>
+              </div>
+              <div className="flex flex-row gap-2 items-center w-full">
+                <div className="w-10/12">
+                  <Input placeholder="" />
+                </div>
+                <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
+                  <FaPlus />
+                </Button>
+              </div>
+            </div>
+            <div className="w-full xl:w-6/12 flex flex-col gap-2">
+              <div className="flex gap-2">
+                <TbApi className="text-2xl" />
+                <p className="text-base font-normal">API Woowa</p>
+              </div>
+              <div className="flex flex-row gap-2 items-center w-full">
+                <div className="w-10/12">
+                  <Input placeholder="" />
+                </div>
+                <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
+                  <FaPlus />
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="w-full flex flex-col gap-2">
             <div className="flex gap-2">
-              <TbApi className="text-2xl" />
-              <p className="text-base font-normal">API Woowa</p>
+              <FaWhatsapp className="text-2xl" />
+              <p className="text-base font-normal">Pending Followup Topup</p>
             </div>
             <div className="flex flex-row gap-2 items-center w-full">
-              <div className="w-10/12">
-                <Input placeholder="" />
+              <div className="w-11/12">
+                <Textarea placeholder="" />
+              </div>
+              <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
+                <FaPlus />
+              </Button>
+            </div>
+          </div>
+          <div className="w-full flex flex-col gap-2">
+            <div className="flex gap-2">
+              <FaWhatsapp className="text-2xl" />
+              <p className="text-base font-normal">Processing Followup Topup</p>
+            </div>
+            <div className="flex flex-row gap-2 items-center w-full">
+              <div className="w-11/12">
+                <Textarea placeholder="" />
+              </div>
+              <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
+                <FaPlus />
+              </Button>
+            </div>
+          </div>
+          <div className="w-full flex flex-col gap-2">
+            <div className="flex gap-2">
+              <FaWhatsapp className="text-2xl" />
+              <p className="text-base font-normal">Complete Followup Topup</p>
+            </div>
+            <div className="flex flex-row gap-2 items-center w-full">
+              <div className="w-11/12">
+                <Textarea placeholder="" />
+              </div>
+              <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
+                <FaPlus />
+              </Button>
+            </div>
+          </div>
+          <div className="w-full flex flex-col gap-2">
+            <div className="flex gap-2">
+              <FaWhatsapp className="text-2xl" />
+              <p className="text-base font-normal">Pending Followup Akun</p>
+            </div>
+            <div className="flex flex-row gap-2 items-center w-full">
+              <div className="w-11/12">
+                <Textarea placeholder="" />
+              </div>
+              <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
+                <FaPlus />
+              </Button>
+            </div>
+          </div>
+          <div className="w-full flex flex-col gap-2">
+            <div className="flex gap-2">
+              <FaWhatsapp className="text-2xl" />
+              <p className="text-base font-normal">Added Followup Akun</p>
+            </div>
+            <div className="flex flex-row gap-2 items-center w-full">
+              <div className="w-11/12">
+                <Textarea placeholder="" />
               </div>
               <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
                 <FaPlus />
