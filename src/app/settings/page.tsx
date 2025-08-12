@@ -86,7 +86,7 @@ const Page = () => {
                 <p className="text-base font-normal">API Woowa</p>
               </div>
               <div className="flex flex-row gap-2 items-center w-full">
-                <div className="w-10/12">
+                <div className="w-11/12">
                   <Input placeholder="" />
                 </div>
                 <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
@@ -100,7 +100,7 @@ const Page = () => {
                 <p className="text-base font-normal">API Woowa</p>
               </div>
               <div className="flex flex-row gap-2 items-center w-full">
-                <div className="w-10/12">
+                <div className="w-11/12">
                   <Input placeholder="" />
                 </div>
                 <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">

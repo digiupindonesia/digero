@@ -24,7 +24,7 @@ const links = [
   {
     Icon: BiCartAdd,
     text: "Request Akun",
-    path: "/request-akun",
+    path: "/request-account",
   },
   {
     Icon: FaRegUserCircle,
@@ -41,20 +41,24 @@ const links = [
 export const Navbar = () => {
   const pathname = usePathname();
   console.log("Current Pathname:", pathname);
-  
+
   return (
     <>
-      <div
-        className="bg-black text-white w-full fixed bottom-0 xl:fixed xl:top-0 xl:left-0 xl:w-72 xl:h-screen flex flex-col"
-      >
+      <div className="bg-black text-white w-full fixed bottom-0 xl:fixed xl:top-0 xl:left-0 xl:w-72 xl:h-screen flex flex-col">
         <div
           className="hidden xl:flex w-full h-32 bg-center bg-no-repeat"
           style={{ backgroundImage: "url(/icon/icon.png)" }}
         />
-        <nav className="flex flex-1 flex-row xl:flex-col justify-between px-5 md:px-20 xl:p-5 2xl:p-10">
+        <nav className="flex flex-1 flex-row xl:flex-col justify-between py-4 px-5 md:px-20 xl:p-5 2xl:p-10">
           <div className="flex xl:flex-col flex-row gap-2">
             {links.map(({ Icon, text, path }) => (
-              <NavLink key={path} path={path} Icon={Icon} text={text} active={pathname === path} />
+              <NavLink
+                key={path}
+                path={path}
+                Icon={Icon}
+                text={text}
+                active={pathname === path}
+              />
             ))}
           </div>
           <NavLink path={"/logout"} Icon={MdOutlineLogout} text="Logout" />
