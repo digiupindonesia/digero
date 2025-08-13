@@ -7,3 +7,12 @@ export type Member = {
   fee: number;
   suspended: boolean
 };
+
+export type ListReqAccount = {
+  id: string;
+  datetime: string;
+  name: string;
+  accountName: string;
+  idbc:string;
+  status: "pending" | "processing" | "added";
+}
