@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -34,23 +34,52 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ListReqAccount } from "@/type";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps {
+  columns: ColumnDef<ListReqAccount>[];
+  data: ListReqAccount[];
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+export function DataTable({ columns, data }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  // Filter data berdasarkan status dengan useMemo untuk optimasi
+  const filteredData = useMemo(() => {
+    return statusFilter === "all"
+      ? data
+      : data.filter((item) => item.status === statusFilter);
+  }, [data, statusFilter]);
+
+  // Hitung jumlah data untuk setiap status dengan useMemo untuk optimasi
+  const statusCounts = useMemo(() => {
+    return {
+      all: data.length,
+      pending: data.filter((item) => item.status === "pending").length,
+      processing: data.filter((item) => item.status === "processing").length,
+      added: data.filter((item) => item.status === "added").length,
+    };
+  }, [data]);
+
+  // Create memoized handlers untuk mencegah re-render
+  const handleStatusFilter = useCallback((status: string) => {
+    setStatusFilter(status);
+  }, []);
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
@@ -67,11 +96,59 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
-
-  console.log("Row Selection:", rowSelection);
   return (
     <>
       <div className="w-full flex gap-2 items-center justify-end pb-4">
+        <Menubar>
+          <MenubarMenu>
+            <MenubarTrigger
+              onClick={() => handleStatusFilter("all")}
+              className={
+                statusFilter === "all"
+                  ? "text-yellow-500"
+                  : ""
+              }
+            >
+              All ({statusCounts.all})
+            </MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger
+              onClick={() => handleStatusFilter("pending")}
+              className={
+                statusFilter === "pending"
+                  ? "text-yellow-500"
+                  : ""
+              }
+            >
+              Pending ({statusCounts.pending})
+            </MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger
+              onClick={() => handleStatusFilter("processing")}
+              className={
+                statusFilter === "processing"
+                  ? "text-yellow-500"
+                  : ""
+              }
+            >
+              Processing ({statusCounts.processing})
+            </MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger
+              onClick={() => handleStatusFilter("added")}
+              className={
+                statusFilter === "added"
+                  ? "text-yellow-500"
+                  : ""
+              }
+            >
+              Added ({statusCounts.added})
+            </MenubarTrigger>
+          </MenubarMenu>
+        </Menubar>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto py-5">
@@ -102,7 +179,7 @@ export function DataTable<TData, TValue>({
           <InputComponent
             Icon={FaSearch}
             className="w-full py-0"
-            placeholder="Filter emails..."
+            placeholder="Filter IDBC..."
             value={(table.getColumn("idbc")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("idbc")?.setFilterValue(event.target.value)
@@ -116,11 +193,32 @@ export function DataTable<TData, TValue>({
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
+            <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setStatusFilter("all")}
+              className={statusFilter === "all" ? "bg-gray-100" : ""}
+            >
+              All
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setStatusFilter("pending")}
+              className={statusFilter === "pending" ? "bg-gray-100" : ""}
+            >
               Pending
             </DropdownMenuItem>
-            <DropdownMenuItem>Processing</DropdownMenuItem>
-            <DropdownMenuItem>Added</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setStatusFilter("processing")}
+              className={statusFilter === "processing" ? "bg-gray-100" : ""}
+            >
+              Processing
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setStatusFilter("added")}
+              className={statusFilter === "added" ? "bg-gray-100" : ""}
+            >
+              Added
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -147,7 +245,6 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
-
                 return (
                   <TableRow
                     key={row.id}
