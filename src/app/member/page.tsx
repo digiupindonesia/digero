@@ -1,7 +1,7 @@
 import React from "react";
 import ContainerComponent from "@/components/ContainerComponent";
 import ContainerPage from "@/components/ContainerPage";
-import { columns } from "./columns";
+import { columns } from "../../components/Member/columns";
 import { DataTable } from "@/components/Member/DataTable";
 import members from "@/assets/data/member.js";
 import { Member } from "@/type";

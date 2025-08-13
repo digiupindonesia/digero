@@ -5,6 +5,5 @@ export type Member = {
   phone: number;
   accountLinked: string[];
   fee: number;
-//   status: "pending" | "processing" | "added";
-  //   suspend, ganti pw, fee
+  suspended: boolean
 };

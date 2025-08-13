@@ -8,7 +8,7 @@ const members = [
     phone: 6281234567890,
     accountLinked: ["alice_johnson", "aj_tiktok88"],
     fee: 50000,
-    // status: "pending",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440002",
@@ -17,7 +17,7 @@ const members = [
     phone: 6282234567890,
     accountLinked: ["bobwilliams23", "bobby_tk", "bobw88"],
     fee: 45000,
-    // status: "processing",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440003",
@@ -26,7 +26,7 @@ const members = [
     phone: 6283234567890,
     accountLinked: ["charliebrown88", "cbrown_tiktok"],
     fee: 60000,
-    // status: "added",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440004",
@@ -35,7 +35,7 @@ const members = [
     phone: 6284234567890,
     accountLinked: ["dianaprince_", "wonderdiana_tk"],
     fee: 55000,
-    // status: "pending",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440005",
@@ -44,7 +44,7 @@ const members = [
     phone: 6285234567890,
     accountLinked: ["ethanhunt007", "ehunt_official", "missionhunt"],
     fee: 47000,
-    // status: "processing",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440006",
@@ -53,7 +53,7 @@ const members = [
     phone: 6286234567890,
     accountLinked: ["fionag_99", "fionag_tiktok"],
     fee: 49000,
-    // status: "added",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440007",
@@ -62,7 +62,7 @@ const members = [
     phone: 6287234567890,
     accountLinked: ["george_milr", "gmiller88", "george_tk"],
     fee: 51000,
-    // status: "pending",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440008",
@@ -71,7 +71,7 @@ const members = [
     phone: 6288234567890,
     accountLinked: ["hannahlee_tk", "hlee_22"],
     fee: 53000,
-    // status: "processing",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440009",
@@ -80,7 +80,7 @@ const members = [
     phone: 6289234567890,
     accountLinked: ["ianscott_real", "iscott_tiktok", "ian88"],
     fee: 58000,
-    // status: "added",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440010",
@@ -89,7 +89,7 @@ const members = [
     phone: 6281034567890,
     accountLinked: ["janefoster_off", "jfoster88"],
     fee: 46000,
-    // status: "pending",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440011",
@@ -98,7 +98,7 @@ const members = [
     phone: 6281134567890,
     accountLinked: ["kevinhartx", "khart_real", "kh88_tk"],
     fee: 54000,
-    // status: "processing",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440012",
@@ -107,7 +107,7 @@ const members = [
     phone: 6281234567800,
     accountLinked: ["laurap_almr", "laurap_tiktok"],
     fee: 50000,
-    // status: "added",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440013",
@@ -116,7 +116,7 @@ const members = [
     phone: 6281334567890,
     accountLinked: ["mikeross24", "mross_tk"],
     fee: 48000,
-    // status: "pending",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440014",
@@ -125,7 +125,7 @@ const members = [
     phone: 6281434567890,
     accountLinked: ["ninadobrev99", "ndobrev_official", "nina_d88"],
     fee: 56000,
-    // status: "processing",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440015",
@@ -134,7 +134,7 @@ const members = [
     phone: 6281534567890,
     accountLinked: ["oscar_isaac", "oisaac_tiktok"],
     fee: 59000,
-    // status: "added",
+    suspended: true
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440016",
@@ -143,7 +143,7 @@ const members = [
     phone: 6281634567890,
     accountLinked: ["paulaabdul_tk", "pabdul99"],
     fee: 53000,
-    // status: "pending",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440017",
@@ -152,7 +152,7 @@ const members = [
     phone: 6281734567890,
     accountLinked: ["quincy_jns", "qjones_real", "qj_88"],
     fee: 51000,
-    // status: "processing",
+    suspended: true
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440018",
@@ -161,7 +161,7 @@ const members = [
     phone: 6281834567890,
     accountLinked: ["rachel_green88", "rgreen_tk"],
     fee: 57000,
-    // status: "added",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440019",
@@ -170,7 +170,7 @@ const members = [
     phone: 6281934567890,
     accountLinked: ["steverogers191", "srogers_cap"],
     fee: 60000,
-    // status: "pending",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440020",
@@ -179,7 +179,7 @@ const members = [
     phone: 6282034567890,
     accountLinked: ["tinafeytk", "tina_f88"],
     fee: 49000,
-    // status: "processing",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440021",
@@ -188,7 +188,7 @@ const members = [
     phone: 6282134567890,
     accountLinked: ["ursula_leguin", "ukleguin_tk", "ursula_k88"],
     fee: 52000,
-    // status: "added",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440022",
@@ -197,7 +197,7 @@ const members = [
     phone: 6282234567890,
     accountLinked: ["victor_hugo", "vhugo_real"],
     fee: 48000,
-    // status: "pending",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440023",
@@ -206,7 +206,7 @@ const members = [
     phone: 6282334567890,
     accountLinked: ["wendy_darling", "wdarling88", "wendy_tk"],
     fee: 56000,
-    // status: "processing",
+    suspended: true
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440024",
@@ -215,7 +215,7 @@ const members = [
     phone: 6282434567890,
     accountLinked: ["xander_harris", "xharris_tk"],
     fee: 59000,
-    // status: "added",
+    suspended: false
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440025",
@@ -224,7 +224,7 @@ const members = [
     phone: 6282534567890,
     accountLinked: ["yvonne_strah", "ystrahovski_tk", "yv88_tk"],
     fee: 55000,
-    // status: "pending",
+    suspended: false
   },
 ];
 
