@@ -29,7 +29,7 @@ const links = [
   {
     Icon: FaRegUserCircle,
     text: "Data Member",
-    path: "/data-member",
+    path: "/member",
   },
   {
     Icon: IoExtensionPuzzleOutline,
@@ -44,7 +44,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <div className="bg-black text-white w-full fixed bottom-0 xl:fixed xl:top-0 xl:left-0 xl:w-72 xl:h-screen flex flex-col">
+      <div className="bg-black text-white w-full fixed bottom-0 xl:fixed xl:top-0 xl:left-0 xl:w-72 xl:h-screen flex flex-col z-50">
         <div
           className="hidden xl:flex w-full h-32 bg-center bg-no-repeat"
           style={{ backgroundImage: "url(/icon/icon.png)" }}

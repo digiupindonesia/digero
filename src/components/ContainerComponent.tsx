@@ -10,7 +10,7 @@ export default function ContainerComponent({
   children,
 }: ContainerComponentProps) {
   return (
-    <div className="p-6 flex flex-col gap-4">
+    <div className="p-6 flex flex-col gap-4 container mx-auto">
       <h2 className="text-xl font-bold ">{title}</h2>
       {children}
     </div>

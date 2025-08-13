@@ -39,7 +39,7 @@ export default function RootLayout({
       <body className={``}>
         <div className="layout flex min-h-screen">
           <Navbar />
-          <main className="main-content w-full min-h-screen xl:pl-72 pb-20 xl:pb-0">{children}</main>
+          <main className=" w-full min-h-screen xl:pl-72 pb-20 xl:pb-0">{children}</main>
         </div>
       </body>
     </html>

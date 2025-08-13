@@ -12,7 +12,7 @@ interface InputProps extends ShadInputProps {
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ Icon, className, type = "text", ...props }, ref) => {
     return (
-      <div className="w-full flex items-center gap-2 border px-4 py-2 bg-white rounded-lg">
+      <div className="w-full flex items-center gap-2 border px-4 py-1 bg-white rounded-lg">
         {Icon && <Icon className="text-xl shrink-0" />}
         <InputShadCn
           ref={ref}
