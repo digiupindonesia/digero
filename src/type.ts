@@ -5,7 +5,7 @@ export type Member = {
   phone: number;
   accountLinked: string[];
   fee: number;
-  suspended: boolean
+  suspended: boolean;
 };
 
 export type ListReqAccount = {
@@ -13,6 +13,16 @@ export type ListReqAccount = {
   datetime: string;
   name: string;
   accountName: string;
-  idbc:string;
+  idbc: string;
   status: "pending" | "processing" | "added";
-}
+};
+
+export type ListReqTopUp = {
+  id: string;
+  datetime: string;
+  name: string;
+  accountName: string;
+  price: number;
+  fee: number;
+  status: "pending" | "processing" | "complete";
+};
