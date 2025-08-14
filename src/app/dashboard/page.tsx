@@ -9,8 +9,58 @@ import RangeDatePicker from "@/components/RangeDatePicker";
 import { CardDashboard } from "@/components/CardDashboard";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 import BarChartComponent from "@/components/BarChart";
+import { CustomCardDashboard } from "@/components/CustomCardDashboard";
+
+const dummyData = [
+  {
+    id: 0,
+    name: "Bambang",
+    topupFreq: 98,
+    amount: 20000000,
+    fee: 5, // in percentage
+  },
+  {
+    id: 1,
+    name: "Siti",
+    topupFreq: 120,
+    amount: 15000000,
+    fee: 3,
+  },
+  {
+    id: 2,
+    name: "Andi",
+    topupFreq: 75,
+    amount: 25000000,
+    fee: 4,
+  },
+  {
+    id: 3,
+    name: "Rina",
+    topupFreq: 50,
+    amount: 18000000,
+    fee: 2.5,
+  },
+  {
+    id: 4,
+    name: "Dewi",
+    topupFreq: 130,
+    amount: 30000000,
+    fee: 6,
+  },
+];
 
 export default function Page() {
+  const feeCalculator = (amount: number, fee: number) => {
+    return (amount * fee) / 100;
+  }
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(value);
+  }
   return (
     <ContainerPage title="Dashboard" isHeader={false}>
       <HeaderPage title="Dashboard" />
@@ -62,7 +112,7 @@ export default function Page() {
             />
           </div>
           <div className="md:p-5 lg:p-10 flex flex-col gap-5">
-            <div className="col-span-3 w-full h-96 rounded-2xl bg-[#F7F7F7] shadow-none outline-none p-5">
+            <div className="col-span-3 w-full h-96 rounded-2xl bg-[#F7F7F7] shadow-none outline-none p-5 border">
               <div className="flex flex-col items-start gap-5 w-full h-full">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded flex bg-white items-center justify-center shrink-0">
@@ -74,7 +124,7 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="col-span-3 w-full h-96 rounded-2xl bg-[#F7F7F7] shadow-none outline-none p-5">
+            <div className="col-span-3 w-full h-96 rounded-2xl bg-[#F7F7F7] shadow-none outline-none p-5 border">
               <div className="flex flex-col items-start gap-5 w-full h-full">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded flex bg-white items-center justify-center shrink-0">
@@ -85,6 +135,35 @@ export default function Page() {
                 <BarChartComponent />
               </div>
             </div>
+            <CustomCardDashboard
+              icon={MdOutlineDashboardCustomize}
+              title="Best Member Total Topup"
+            >
+              {dummyData.map((item, index) => {
+                return(
+                  <div className="flex items-center gap-3" key={index}>
+                    <p className="text-sm font-medium">
+                      {index+1}
+                    </p>
+                    <p className="text-sm font-medium">
+                      {item.name}
+                    </p>
+                    <p className="text-sm font-normal">
+                      {item.topupFreq} kali topup
+                    </p>
+                    <p className="text-sm font-normal">
+                      Rp {formatCurrency(item.amount)} 
+                    </p>
+                    <p className="text-sm font-normal">
+                      Fee {item.fee}%
+                    </p>
+                    <p className="text-sm font-normal">
+                      {feeCalculator(item.amount, item.fee)}
+                    </p>
+                  </div>
+                )
+              })}
+            </CustomCardDashboard>
           </div>
         </div>
       </ContainerComponent>
