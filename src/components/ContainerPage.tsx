@@ -5,12 +5,17 @@ import { FaWhatsapp } from "react-icons/fa";
 interface ContainerPageProps {
   title: string;
   children: ReactNode;
+  isHeader?: boolean;
 }
 
-export default function ContainerPage({ title, children }: ContainerPageProps) {
+export default function ContainerPage({
+  title,
+  children,
+  isHeader = true,
+}: ContainerPageProps) {
   return (
     <div className=" bg-gray-100 h-full">
-      <HeaderPage title={title} Icon={FaWhatsapp} isButton />
+      {isHeader && <HeaderPage title={title} Icon={FaWhatsapp} isButton />}
       {children}
     </div>
   );

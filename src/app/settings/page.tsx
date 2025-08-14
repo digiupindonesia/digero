@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { FaWhatsapp } from "react-icons/fa";
-import HeaderPage from "@/components/HeaderPage";
 import { AiOutlineUser } from "react-icons/ai";
 import Input from "@/components/Input";
 import { FaRegEnvelope } from "react-icons/fa";

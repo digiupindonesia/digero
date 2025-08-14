@@ -43,6 +43,10 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import { MdAccessTime } from "react-icons/md";
+import { FaCheck } from "react-icons/fa6";
+import { FaCheckDouble } from "react-icons/fa6";
+import { MdOutlineFilterList } from "react-icons/md";
 
 interface DataTableProps {
   columns: ColumnDef<ListReqTopUp>[];
@@ -103,48 +107,44 @@ export function DataTable({ columns, data }: DataTableProps) {
           <MenubarMenu>
             <MenubarTrigger
               onClick={() => handleStatusFilter("all")}
-              className={
-                statusFilter === "all"
-                  ? "text-yellow-500"
-                  : ""
-              }
+              className={`${
+                statusFilter === "all" ? "text-yellow-500" : ""
+              } flex items-center gap-1`}
             >
+              <MdOutlineFilterList className="text-lg" />
               All ({statusCounts.all})
             </MenubarTrigger>
           </MenubarMenu>
           <MenubarMenu>
             <MenubarTrigger
               onClick={() => handleStatusFilter("pending")}
-              className={
-                statusFilter === "pending"
-                  ? "text-yellow-500"
-                  : ""
-              }
+              className={`${
+                statusFilter === "pending" ? "text-yellow-500" : ""
+              } flex items-center gap-1`}
             >
+              <MdAccessTime className="text-lg" />
               Pending ({statusCounts.pending})
             </MenubarTrigger>
           </MenubarMenu>
           <MenubarMenu>
             <MenubarTrigger
               onClick={() => handleStatusFilter("processing")}
-              className={
-                statusFilter === "processing"
-                  ? "text-yellow-500"
-                  : ""
-              }
+              className={`${
+                statusFilter === "processing" ? "text-yellow-500" : ""
+              } flex items-center gap-1`}
             >
+              <FaCheck className="text-lg" />
               Processing ({statusCounts.processing})
             </MenubarTrigger>
           </MenubarMenu>
           <MenubarMenu>
             <MenubarTrigger
               onClick={() => handleStatusFilter("complete")}
-              className={
-                statusFilter === "added"
-                  ? "text-yellow-500"
-                  : ""
-              }
+              className={`${
+                statusFilter === "complete" ? "text-yellow-500" : ""
+              } flex items-center gap-1`}
             >
+              <FaCheckDouble className="text-lg" />
               Complete ({statusCounts.complete})
             </MenubarTrigger>
           </MenubarMenu>
