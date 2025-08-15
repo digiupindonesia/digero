@@ -41,6 +41,16 @@ const links = [
 export const Navbar = () => {
   const pathname = usePathname();
   console.log("Current Pathname:", pathname);
+  // Buat array dari semua path yang valid (termasuk logout)
+  const validPaths = [...links.map(link => link.path), "/logout"];
+  
+  // Cek apakah pathname saat ini ada dalam validPaths
+  const isValidPath = validPaths.includes(pathname);
+  
+  // Jika path tidak valid, hide navbar
+  if (!isValidPath) {
+    return null;
+  }
 
   return (
     <>

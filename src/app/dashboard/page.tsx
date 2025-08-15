@@ -22,6 +22,15 @@ import {
   ResponsiveContainer,
   LabelList,
 } from "recharts";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Crown } from "lucide-react";
 
 const dummyData = [
   {
@@ -102,15 +111,15 @@ const dummyTrenData = [
 const dummyStatusData = [
   {
     name: "Pending",
-    pend: 20,
+    pending: 20,
   },
   {
     name: "Processing",
-    proc: 30,
+    processing: 30,
   },
   {
     name: "Completed",
-    comp: 50,
+    completed: 50,
   },
 ];
 
@@ -177,51 +186,71 @@ export default function Page() {
             />
           </div>
           <div className="md:p-5 lg:p-10 flex flex-col gap-5">
-            <div className="col-span-3 w-full h-96 rounded-2xl bg-[#F7F7F7] shadow-none outline-none p-5 border">
-              <div className="flex flex-col items-start gap-5 w-full h-full">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded flex bg-white items-center justify-center shrink-0">
-                    <MdOutlineDashboardCustomize className="h-6 w-6" />
+            <div className="flex flex-col gap-5 2xl:flex-row">
+              <div className="col-span-3 w-full 2xl:w-8/12 h-96 rounded-2xl bg-[#F7F7F7] shadow-none outline-none p-5 border">
+                <div className="flex flex-col items-start gap-5 w-full h-full">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded flex bg-white items-center justify-center shrink-0">
+                      <MdOutlineDashboardCustomize className="h-6 w-6" />
+                    </div>
+                    <p className="text-base leading-none">Tren Topup</p>
                   </div>
-                  <p className="text-base leading-none">Tren Topup</p>
+                  <BarChartTrend />
                 </div>
-                <BarChartTrend />
               </div>
-            </div>
 
-            <div className="col-span-3 w-full h-96 rounded-2xl bg-[#F7F7F7] shadow-none outline-none p-5 border">
-              <div className="flex flex-col items-start gap-5 w-full h-full">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded flex bg-white items-center justify-center shrink-0">
-                    <MdOutlineDashboardCustomize className="h-6 w-6" />
+              <div className="col-span-3 w-full 2xl:w-4/12 h-96 rounded-2xl bg-[#F7F7F7] shadow-none outline-none p-5 border">
+                <div className="flex flex-col items-start gap-5 w-full h-full">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded flex bg-white items-center justify-center shrink-0">
+                      <MdOutlineDashboardCustomize className="h-6 w-6" />
+                    </div>
+                    <p className="text-base leading-none">Topup Status</p>
                   </div>
-                  <p className="text-base leading-none">Topup Status</p>
+                  <BarStatusComponent />
                 </div>
-                <BarStatusComponent />
               </div>
             </div>
             <CustomCardDashboard
               icon={MdOutlineDashboardCustomize}
               title="Best Member Total Topup"
             >
-              {dummyData.map((item, index) => {
-                return (
-                  <div className="flex items-center gap-3" key={index}>
-                    <p className="text-sm font-medium">{index + 1}</p>
-                    <p className="text-sm font-medium">{item.name}</p>
-                    <p className="text-sm font-normal">
-                      {item.topupFreq} kali topup
-                    </p>
-                    <p className="text-sm font-normal">
-                      Rp {formatCurrency(item.amount)}
-                    </p>
-                    <p className="text-sm font-normal">Fee {item.fee}%</p>
-                    <p className="text-sm font-normal">
-                      {feeCalculator(item.amount, item.fee)}
-                    </p>
-                  </div>
-                );
-              })}
+              <Table className="text-sm">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-10 text-center">#</TableHead>
+                    <TableHead>Nama</TableHead>
+                    <TableHead className="w-40">Freq Topup</TableHead>
+                    <TableHead className="w-52">Total</TableHead>
+                    <TableHead className="w-24">Fee</TableHead>
+                    <TableHead className="w-40">Fee (Rp)</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody className="font-variant-numeric tabular-nums">
+                  {dummyData.map((item, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="text-center">
+                        {i === 0 ? <Crown className="inline h-4 w-4" /> : i + 1}
+                      </TableCell>
+                      <TableCell className="font-medium">{item.name}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {item.topupFreq} Kali Topup
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        Total Rp {formatCurrency(item.amount)}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        Fee {item.fee}%
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        Rp{" "}
+                        {formatCurrency(feeCalculator(item.amount, item.fee))}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CustomCardDashboard>
           </div>
         </div>
@@ -246,7 +275,7 @@ const BarChartTrend = () => {
       >
         {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <XAxis dataKey="name" />
-        {/* <YAxis /> */}
+        <YAxis />
         <Tooltip />
         <Legend />
         <Bar
@@ -286,9 +315,14 @@ const BarStatusComponent = () => {
         {/* <YAxis /> */}
         <Tooltip />
         <Legend />
-        <Bar dataKey="pend" fill="#E1582A" radius={[5, 5, 5, 5]} barSize={48}>
+        <Bar
+          dataKey="pending"
+          fill="#E1582A"
+          radius={[5, 5, 5, 5]}
+          barSize={48}
+        >
           <LabelList
-            dataKey="pend"
+            dataKey="pending"
             position="insideTop"
             formatter={(label: React.ReactNode) => `${label}%`}
             // gunakan content kustom agar warna & gaya sesuai
@@ -311,9 +345,14 @@ const BarStatusComponent = () => {
             }}
           />
         </Bar>
-        <Bar dataKey="proc" fill="#E1822A" radius={[5, 5, 5, 5]} barSize={48}>
+        <Bar
+          dataKey="processing"
+          fill="#E1822A"
+          radius={[5, 5, 5, 5]}
+          barSize={48}
+        >
           <LabelList
-            dataKey="proc"
+            dataKey="processing"
             position="insideTop"
             formatter={(label: React.ReactNode) => `${label}%`}
             // gunakan content kustom agar warna & gaya sesuai
@@ -336,9 +375,14 @@ const BarStatusComponent = () => {
             }}
           />
         </Bar>
-        <Bar dataKey="comp" fill="#E1B32A" radius={[5, 5, 5, 5]} barSize={48}>
+        <Bar
+          dataKey="completed"
+          fill="#E1B32A"
+          radius={[5, 5, 5, 5]}
+          barSize={48}
+        >
           <LabelList
-            dataKey="comp"
+            dataKey="completed"
             position="insideTop"
             formatter={(label: React.ReactNode) => `${label}%`}
             // gunakan content kustom agar warna & gaya sesuai
