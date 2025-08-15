@@ -10,6 +10,18 @@ import { CardDashboard } from "@/components/CardDashboard";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 import BarChartComponent from "@/components/BarChart";
 import { CustomCardDashboard } from "@/components/CustomCardDashboard";
+import {
+  BarChart,
+  Bar,
+  Rectangle,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LabelList,
+} from "recharts";
 
 const dummyData = [
   {
@@ -49,18 +61,71 @@ const dummyData = [
   },
 ];
 
+const dummyTrenData = [
+  {
+    name: "Jan",
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Feb",
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Mar",
+    pv: 9800,
+    amt: 2290,
+  },
+  {
+    name: "Apr",
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: "May",
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Jun",
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Jul",
+    pv: 4300,
+    amt: 2100,
+  },
+];
+
+const dummyStatusData = [
+  {
+    name: "Pending",
+    pend: 20,
+  },
+  {
+    name: "Processing",
+    proc: 30,
+  },
+  {
+    name: "Completed",
+    comp: 50,
+  },
+];
+
 export default function Page() {
   const feeCalculator = (amount: number, fee: number) => {
     return (amount * fee) / 100;
-  }
+  };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
       minimumFractionDigits: 0,
     }).format(value);
-  }
+  };
   return (
     <ContainerPage title="Dashboard" isHeader={false}>
       <HeaderPage title="Dashboard" />
@@ -120,7 +185,7 @@ export default function Page() {
                   </div>
                   <p className="text-base leading-none">Tren Topup</p>
                 </div>
-                <BarChartComponent />
+                <BarChartTrend />
               </div>
             </div>
 
@@ -132,7 +197,7 @@ export default function Page() {
                   </div>
                   <p className="text-base leading-none">Topup Status</p>
                 </div>
-                <BarChartComponent />
+                <BarStatusComponent />
               </div>
             </div>
             <CustomCardDashboard
@@ -140,28 +205,22 @@ export default function Page() {
               title="Best Member Total Topup"
             >
               {dummyData.map((item, index) => {
-                return(
+                return (
                   <div className="flex items-center gap-3" key={index}>
-                    <p className="text-sm font-medium">
-                      {index+1}
-                    </p>
-                    <p className="text-sm font-medium">
-                      {item.name}
-                    </p>
+                    <p className="text-sm font-medium">{index + 1}</p>
+                    <p className="text-sm font-medium">{item.name}</p>
                     <p className="text-sm font-normal">
                       {item.topupFreq} kali topup
                     </p>
                     <p className="text-sm font-normal">
-                      Rp {formatCurrency(item.amount)} 
+                      Rp {formatCurrency(item.amount)}
                     </p>
-                    <p className="text-sm font-normal">
-                      Fee {item.fee}%
-                    </p>
+                    <p className="text-sm font-normal">Fee {item.fee}%</p>
                     <p className="text-sm font-normal">
                       {feeCalculator(item.amount, item.fee)}
                     </p>
                   </div>
-                )
+                );
               })}
             </CustomCardDashboard>
           </div>
@@ -170,3 +229,139 @@ export default function Page() {
     </ContainerPage>
   );
 }
+
+const BarChartTrend = () => {
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        width={100}
+        height={500}
+        data={dummyTrenData}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+        <XAxis dataKey="name" />
+        {/* <YAxis /> */}
+        <Tooltip />
+        <Legend />
+        <Bar
+          dataKey="pv"
+          barSize={16}
+          fill="#E1B32A"
+          activeBar={<Rectangle fill="#E1B32A" stroke="black" />}
+        />
+        <Bar
+          dataKey="amt"
+          barSize={16}
+          fill="#E1822A"
+          activeBar={<Rectangle fill="#E1822A" stroke="black" />}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+};
+
+const BarStatusComponent = () => {
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        className="pb-5"
+        width={100}
+        height={500}
+        data={dummyStatusData}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+        {/* <XAxis dataKey="name" /> */}
+        {/* <YAxis /> */}
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="pend" fill="#E1582A" radius={[5, 5, 5, 5]} barSize={48}>
+          <LabelList
+            dataKey="pend"
+            position="insideTop"
+            formatter={(label: React.ReactNode) => `${label}%`}
+            // gunakan content kustom agar warna & gaya sesuai
+            content={(props) => {
+              const { x = 0, y = 0, width = 0, value } = props as any;
+              const cx = x + width / 2;
+              const cy = y + 20; // padding dari atas bar
+              return (
+                <text
+                  x={cx}
+                  y={cy}
+                  textAnchor="middle"
+                  fontSize={15}
+                  fontWeight={700}
+                  fill="#fff"
+                >
+                  {value}%
+                </text>
+              );
+            }}
+          />
+        </Bar>
+        <Bar dataKey="proc" fill="#E1822A" radius={[5, 5, 5, 5]} barSize={48}>
+          <LabelList
+            dataKey="proc"
+            position="insideTop"
+            formatter={(label: React.ReactNode) => `${label}%`}
+            // gunakan content kustom agar warna & gaya sesuai
+            content={(props) => {
+              const { x = 0, y = 0, width = 0, value } = props as any;
+              const cx = x + width / 2;
+              const cy = y + 20; // padding dari atas bar
+              return (
+                <text
+                  x={cx}
+                  y={cy}
+                  textAnchor="middle"
+                  fontSize={15}
+                  fontWeight={700}
+                  fill="#fff"
+                >
+                  {value}%
+                </text>
+              );
+            }}
+          />
+        </Bar>
+        <Bar dataKey="comp" fill="#E1B32A" radius={[5, 5, 5, 5]} barSize={48}>
+          <LabelList
+            dataKey="comp"
+            position="insideTop"
+            formatter={(label: React.ReactNode) => `${label}%`}
+            // gunakan content kustom agar warna & gaya sesuai
+            content={(props) => {
+              const { x = 0, y = 0, width = 0, value } = props as any;
+              const cx = x + width / 2;
+              const cy = y + 20; // padding dari atas bar
+              return (
+                <text
+                  x={cx}
+                  y={cy}
+                  textAnchor="middle"
+                  fontSize={15}
+                  fontWeight={700}
+                  fill="#fff"
+                >
+                  {value}%
+                </text>
+              );
+            }}
+          />
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  );
+};
