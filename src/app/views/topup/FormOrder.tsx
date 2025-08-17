@@ -69,7 +69,7 @@ export default function FormOrder() {
               <p className="text-base font-normal">Jumlah Nominal</p>
             </div>
             <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
-              <Input Icon={FaRegAddressCard} className="w-full" />
+              <Input Icon={FaRegAddressCard} className="w-full my-1" />
             </div>
           </div>
           <div className="w-full flex flex-col gap-2">
@@ -77,7 +77,7 @@ export default function FormOrder() {
               <p className="text-base font-normal">Pilih Akun Iklan</p>
             </div>
             <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
-              <Input Icon={HiOutlineBadgeCheck} className="w-full" />
+              <Input Icon={HiOutlineBadgeCheck} className="w-full my-1" />
             </div>
           </div>
           <Button className="flex items-center gap-2 bg-black w-full text-white py-5 text-base rounded">

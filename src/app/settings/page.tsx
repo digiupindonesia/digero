@@ -22,11 +22,11 @@ const Page = () => {
     <ContainerPage title="Setting">
       <ContainerComponent title="Profile Setting">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:bg-white md:p-6 md:rounded-lg">
-          <Input Icon={AiOutlineUser} placeholder="Username" />
-          <Input Icon={FaWhatsapp} placeholder="Nomor Whatsapp" />
-          <Input Icon={FaRegEnvelope} placeholder="Email" />
-          <Input Icon={CgPassword} placeholder="Password lama" />
-          <Input Icon={TbLockPassword} placeholder="Password baru" />
+          <Input Icon={AiOutlineUser} placeholder="Username" className="my-1" />
+          <Input Icon={FaWhatsapp} placeholder="Nomor Whatsapp" className="my-1"  />
+          <Input Icon={FaRegEnvelope} placeholder="Email" className="my-1"  />
+          <Input Icon={CgPassword} placeholder="Password lama" className="my-1"  />
+          <Input Icon={TbLockPassword} placeholder="Password baru" className="my-1"  />
           <Button className="flex items-center gap-2 bg-black w-fit justify-self-end place-self-end text-white p-2 rounded">
             <IoIosSave />
             Simpan Profile
@@ -42,7 +42,7 @@ const Page = () => {
                 <p className="text-base font-normal">Rekening Bank</p>
               </div>
               <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
-                <Input className="w-full" placeholder="Tambah Rekening Bank" />
+                <Input className="w-full my-1" placeholder="Tambah Rekening Bank" />
                 <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
                   + Rekening
                 </Button>
@@ -54,7 +54,7 @@ const Page = () => {
                 <CiPercent className="text-2xl" />
                 <p className="text-base font-normal">Fee Default</p>
               </div>
-              <Input placeholder="Tambah Rekening Bank" defaultValue={5} />
+              <Input placeholder="Tambah Rekening Bank" defaultValue={5} className="my-1" />
             </div>
           </div>
           <div className="flex flex-col gap-5">
@@ -86,7 +86,7 @@ const Page = () => {
               </div>
               <div className="flex flex-row gap-2 items-center w-full">
                 <div className="w-11/12">
-                  <Input placeholder="" />
+                  <Input placeholder="" className="my-1"  />
                 </div>
                 <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
                   <FaPlus />
@@ -100,7 +100,7 @@ const Page = () => {
               </div>
               <div className="flex flex-row gap-2 items-center w-full">
                 <div className="w-11/12">
-                  <Input placeholder="" />
+                  <Input placeholder="" className="my-1"  />
                 </div>
                 <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
                   <FaPlus />

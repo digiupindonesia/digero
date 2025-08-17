@@ -103,7 +103,7 @@ export function DataTable({ columns, data }: DataTableProps) {
   return (
     <>
       <div className="w-full flex gap-2 items-center justify-end pb-4">
-        <Menubar>
+        <Menubar className="hidden lg:flex">
           <MenubarMenu>
             <MenubarTrigger
               onClick={() => handleStatusFilter("all")}
@@ -149,9 +149,66 @@ export function DataTable({ columns, data }: DataTableProps) {
             </MenubarTrigger>
           </MenubarMenu>
         </Menubar>
+        <div className="lg:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2">
+                <MdOutlineFilterList className="text-lg" />
+                Filter Status
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56">
+              <DropdownMenuItem
+                onClick={() => handleStatusFilter("all")}
+                className={statusFilter === "all" ? "text-yellow-500" : ""}
+              >
+                <MdOutlineFilterList className="mr-2 text-lg" />
+                <span className="flex-1">All</span>
+                <span className="text-muted-foreground">
+                  ({statusCounts.all})
+                </span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => handleStatusFilter("pending")}
+                className={statusFilter === "pending" ? "text-yellow-500" : ""}
+              >
+                <MdAccessTime className="mr-2 text-lg" />
+                <span className="flex-1">Pending</span>
+                <span className="text-muted-foreground">
+                  ({statusCounts.pending})
+                </span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => handleStatusFilter("processing")}
+                className={
+                  statusFilter === "processing" ? "text-yellow-500" : ""
+                }
+              >
+                <FaCheck className="mr-2 text-lg" />
+                <span className="flex-1">Processing</span>
+                <span className="text-muted-foreground">
+                  ({statusCounts.processing})
+                </span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => handleStatusFilter("complete")}
+                className={statusFilter === "complete" ? "text-yellow-500" : ""}
+              >
+                <FaCheckDouble className="mr-2 text-lg" />
+                <span className="flex-1">Complete</span>
+                <span className="text-muted-foreground">
+                  ({statusCounts.complete})
+                </span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto py-5">
+            <Button variant="outline" className="ml-auto">
               Views
             </Button>
           </DropdownMenuTrigger>

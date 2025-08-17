@@ -18,7 +18,7 @@ export default function FormReq() {
             <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
               <Input
                 Icon={FaRegAddressCard}
-                className="w-full"
+                className="w-full my-1"
                 placeholder="Nama Akun"
               />
             </div>
@@ -30,7 +30,7 @@ export default function FormReq() {
             <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
               <Input
                 Icon={HiOutlineBadgeCheck}
-                className="w-full"
+                className="w-full my-1"
                 placeholder="ID Business Center"
               />
             </div>
