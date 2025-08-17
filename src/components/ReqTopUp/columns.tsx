@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LuArrowUpDown } from "react-icons/lu";
 import { Checkbox } from "@/components/ui/checkbox";
+import formatCurrency from "@/utils/formatCurrency";
 
 export const columns: ColumnDef<ListReqTopUp>[] = [
   {
@@ -65,6 +66,13 @@ export const columns: ColumnDef<ListReqTopUp>[] = [
   {
     accessorKey: "price",
     header: "Nominal + Fee",
+    cell: ({ row }) => {
+      return (
+        <span>
+          {formatCurrency(row.getValue("price"))}
+        </span>
+      )
+    }
   },
   {
     accessorKey: "status",
@@ -81,9 +89,13 @@ export const columns: ColumnDef<ListReqTopUp>[] = [
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>Pending</DropdownMenuItem>
-            <DropdownMenuItem>Processing</DropdownMenuItem>
-            <DropdownMenuItem>Complete</DropdownMenuItem>
+            {/* <DropdownMenuItem>Pending</DropdownMenuItem> */}
+            <DropdownMenuItem className="text-yellow-500">
+              Move to Processing
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-green-500">
+              Move to Completed
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

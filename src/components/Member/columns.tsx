@@ -96,6 +96,10 @@ export const columns: ColumnDef<Member>[] = [
   {
     accessorKey: "fee",
     header: "Fee %",
+    cell: ({ row }) => {
+      const fee = row.getValue("fee") as number;
+      return <p>{fee}%</p>;
+    }
   },
   {
     header: "Action",

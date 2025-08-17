@@ -248,31 +248,25 @@ export function DataTable({ columns, data }: DataTableProps) {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+            <DropdownMenuLabel>Action</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => setStatusFilter("all")}
-              className={statusFilter === "all" ? "bg-gray-100" : ""}
-            >
-              All
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setStatusFilter("pending")}
-              className={statusFilter === "pending" ? "bg-gray-100" : ""}
+              // onClick={() => setStatusFilter("pending")}
+              className={`${statusFilter === "pending" ? "bg-gray-100" : ""}`}
             >
               Pending
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => setStatusFilter("processing")}
-              className={statusFilter === "processing" ? "bg-gray-100" : ""}
+              // onClick={() => setStatusFilter("processing")}
+              className={`${statusFilter === "processing" ? "bg-gray-100" : ""} text-yellow-500`}
             >
-              Processing
+              Move to Processing
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => setStatusFilter("added")}
-              className={statusFilter === "added" ? "bg-gray-100" : ""}
+              // onClick={() => setStatusFilter("added")}
+              className={`${statusFilter === "added" ? "bg-gray-100" : ""} text-green-500`}
             >
-              Added
+              Move to Added
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

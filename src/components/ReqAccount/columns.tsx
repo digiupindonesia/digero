@@ -81,9 +81,9 @@ export const columns: ColumnDef<ListReqAccount>[] = [
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>Pending</DropdownMenuItem>
-            <DropdownMenuItem>Processing</DropdownMenuItem>
-            <DropdownMenuItem>Added</DropdownMenuItem>
+            {/* <DropdownMenuItem>Pending</DropdownMenuItem> */}
+            <DropdownMenuItem className="text-yellow-500">Move to Processing</DropdownMenuItem>
+            <DropdownMenuItem className="text-green-500">Move to Added</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

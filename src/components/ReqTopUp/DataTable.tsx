@@ -102,7 +102,7 @@ export function DataTable({ columns, data }: DataTableProps) {
   });
   return (
     <>
-      <div className="w-full flex gap-2 items-center justify-end pb-4">
+      <div className="w-full flex gap-2 items-center justify-end pb-4 overflow-x-scroll">
         <Menubar className="hidden lg:flex">
           <MenubarMenu>
             <MenubarTrigger
@@ -250,31 +250,30 @@ export function DataTable({ columns, data }: DataTableProps) {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+            <DropdownMenuLabel>Action</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => setStatusFilter("all")}
-              className={statusFilter === "all" ? "bg-gray-100" : ""}
-            >
-              All
-            </DropdownMenuItem>
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={() => setStatusFilter("pending")}
               className={statusFilter === "pending" ? "bg-gray-100" : ""}
             >
               Pending
+            </DropdownMenuItem> */}
+            <DropdownMenuItem
+              // onClick={() => setStatusFilter("processing")}
+              className={`${
+                statusFilter === "processing" ? "bg-gray-100" : ""
+              } text-yellow-500`}
+            >
+              Move to Processing
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => setStatusFilter("processing")}
-              className={statusFilter === "processing" ? "bg-gray-100" : ""}
+              // onClick={() => setStatusFilter("added")}
+              // className={statusFilter === "added" ? "bg-gray-100" : ""}
+              className={`${
+                statusFilter === "complete" ? "bg-gray-100" : ""
+              } text-green-500`}
             >
-              Processing
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setStatusFilter("added")}
-              className={statusFilter === "added" ? "bg-gray-100" : ""}
-            >
-              Added
+              Move to Completed
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
