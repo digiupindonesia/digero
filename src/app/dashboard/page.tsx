@@ -31,6 +31,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Crown } from "lucide-react";
+import feeCalculator from "@/utils/feeCalculator";
+import formatCurrency from "@/utils/formatCurrency";
 
 const dummyData = [
   {
@@ -124,17 +126,7 @@ const dummyStatusData = [
 ];
 
 export default function Page() {
-  const feeCalculator = (amount: number, fee: number) => {
-    return (amount * fee) / 100;
-  };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(value);
-  };
   return (
     <ContainerPage title="Dashboard" isHeader={false}>
       <HeaderPage title="Dashboard" />

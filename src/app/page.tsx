@@ -3,6 +3,9 @@
 import * as React from "react";
 // (opsional) ganti ke icon favoritmu; lucide-react dipakai krn ringan
 import { Mail, Lock, Eye, EyeOff, Github } from "lucide-react";
+import strengthText from "@/utils/strengthText";
+import strengthColor from "@/utils/strengthColor";
+import calcStrength from "@/utils/calcStrength";
 
 type Toast = { id: number; type: "success" | "error" | "info"; text: string };
 
@@ -16,7 +19,10 @@ export default function Home() {
 
   // register state
   const [regPassword, setRegPassword] = React.useState("");
-  const strength = React.useMemo(() => calcStrength(regPassword), [regPassword]);
+  const strength = React.useMemo(
+    () => calcStrength(regPassword),
+    [regPassword]
+  );
 
   // toast sederhana
   const [toasts, setToasts] = React.useState<Toast[]>([]);
@@ -33,7 +39,10 @@ export default function Home() {
     const password = String(fd.get("password") || "");
     if (!email || !password) return;
     pushToast("Logging in...", "info");
-    setTimeout(() => pushToast("Login successful! Welcome back.", "success"), 1200);
+    setTimeout(
+      () => pushToast("Login successful! Welcome back.", "success"),
+      1200
+    );
   };
 
   const onSubmitRegister: React.FormEventHandler<HTMLFormElement> = (e) => {
@@ -43,7 +52,8 @@ export default function Home() {
     const password = String(fd.get("password") || "");
     const confirm = String(fd.get("confirm") || "");
     if (!email || !password || !confirm) return;
-    if (password !== confirm) return pushToast("Passwords do not match!", "error");
+    if (password !== confirm)
+      return pushToast("Passwords do not match!", "error");
     pushToast("Creating account...", "info");
     setTimeout(() => {
       pushToast("Account created! Please verify your email.", "success");
@@ -64,7 +74,9 @@ export default function Home() {
           <h1 className="text-4xl font-bold tracking-tight drop-shadow-[0_0_20px_rgba(245,158,11,0.35)]">
             DIGERO
           </h1>
-          <p className="text-amber-400 text-sm tracking-[0.25em]">WHITELIST ACCOUNT</p>
+          <p className="text-amber-400 text-sm tracking-[0.25em]">
+            WHITELIST ACCOUNT
+          </p>
         </div>
 
         {/* Card */}
@@ -99,12 +111,20 @@ export default function Home() {
 
           {/* Login Form */}
           {tab === "login" && (
-            <form onSubmit={onSubmitLogin} className="space-y-5 animate-[slideIn_0.25s_ease-out]">
+            <form
+              onSubmit={onSubmitLogin}
+              className="space-y-5 animate-[slideIn_0.25s_ease-out]"
+            >
               <Field>
                 <Icon>
                   <Mail className="h-4 w-4" />
                 </Icon>
-                <Input name="email" type="email" placeholder="Enter your email" required />
+                <Input
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  required
+                />
               </Field>
 
               <Field>
@@ -117,7 +137,10 @@ export default function Home() {
                   placeholder="Enter your password"
                   required
                 />
-                <Toggle onClick={() => setShowLoginPass((s) => !s)} shown={showLoginPass} />
+                <Toggle
+                  onClick={() => setShowLoginPass((s) => !s)}
+                  shown={showLoginPass}
+                />
               </Field>
 
               <div className="flex items-center justify-between">
@@ -128,7 +151,10 @@ export default function Home() {
                   />
                   Remember me
                 </label>
-                <a className="text-sm text-amber-400 hover:text-amber-500" href="#">
+                <a
+                  className="text-sm text-amber-400 hover:text-amber-500"
+                  href="#"
+                >
                   Forgot password?
                 </a>
               </div>
@@ -149,7 +175,12 @@ export default function Home() {
                 <Icon>
                   <Mail className="h-4 w-4" />
                 </Icon>
-                <Input name="email" type="email" placeholder="Enter your email" required />
+                <Input
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  required
+                />
               </Field>
 
               <Field>
@@ -163,7 +194,10 @@ export default function Home() {
                   required
                   onChange={(e) => setRegPassword(e.target.value)}
                 />
-                <Toggle onClick={() => setShowRegPass((s) => !s)} shown={showRegPass} />
+                <Toggle
+                  onClick={() => setShowRegPass((s) => !s)}
+                  shown={showRegPass}
+                />
               </Field>
 
               <Field>
@@ -176,14 +210,21 @@ export default function Home() {
                   placeholder="Confirm password"
                   required
                 />
-                <Toggle onClick={() => setShowConfirmPass((s) => !s)} shown={showConfirmPass} />
+                <Toggle
+                  onClick={() => setShowConfirmPass((s) => !s)}
+                  shown={showConfirmPass}
+                />
               </Field>
 
               {/* Password strength */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-zinc-300">Password Strength</span>
-                  <span className="text-sm text-zinc-400">{strengthText(strength)}</span>
+                  <span className="text-sm text-zinc-300">
+                    Password Strength
+                  </span>
+                  <span className="text-sm text-zinc-400">
+                    {strengthText(strength)}
+                  </span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-zinc-800 overflow-hidden">
                   <div
@@ -325,30 +366,4 @@ function Button({
       {children}
     </button>
   );
-}
-
-/* ---------- Helpers ---------- */
-
-function calcStrength(pw: string) {
-  let score = 0;
-  if (pw.length >= 8) score += 25;
-  if (/[a-z]/.test(pw)) score += 25;
-  if (/[A-Z]/.test(pw)) score += 25;
-  if (/[0-9]/.test(pw)) score += 15;
-  if (/[^a-zA-Z0-9]/.test(pw)) score += 10;
-  return Math.min(score, 100);
-}
-
-function strengthText(n: number) {
-  if (n < 30) return "Weak";
-  if (n < 60) return "Fair";
-  if (n < 80) return "Good";
-  return "Strong";
-}
-
-function strengthColor(n: number) {
-  if (n < 30) return "bg-red-500";
-  if (n < 60) return "bg-yellow-500";
-  if (n < 80) return "bg-blue-500";
-  return "bg-green-500";
 }
