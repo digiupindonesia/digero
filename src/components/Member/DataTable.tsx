@@ -128,7 +128,7 @@ export function DataTable<TData, TValue>({
               Suspend
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={openModalSafely}>
-              Ganti Password cok
+              Ganti Password
             </DropdownMenuItem>
             <DropdownMenuItem>Ubah Fee</DropdownMenuItem>
           </DropdownMenuContent>
