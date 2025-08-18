@@ -102,7 +102,7 @@ export function DataTable({ columns, data }: DataTableProps) {
   });
   return (
     <>
-      <div className="w-full flex gap-2 items-center justify-end pb-4 overflow-x-scroll">
+      <div className="w-full flex gap-2 items-center justify-end pb-4">
         <Menubar className="hidden lg:flex">
           <MenubarMenu>
             <MenubarTrigger

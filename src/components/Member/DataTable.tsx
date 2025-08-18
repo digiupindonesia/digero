@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -12,7 +13,6 @@ import {
   VisibilityState,
   getPaginationRowModel,
 } from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
 import InputComponent from "@/components/Input";
 import {
   Table,
@@ -34,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Member } from "@/type";
+import { useChangePasswordModal } from "@/stores/changePasswordModal";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,6 +49,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const { toggle, open } = useChangePasswordModal();
 
   const table = useReactTable({
     data,
@@ -68,13 +70,19 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  console.log("Row Selection:", rowSelection);
+  const openModalSafely = () => {
+    // pastikan dropdown close dulu, baru open dialog
+    requestAnimationFrame(() => {
+      useChangePasswordModal.getState().open();
+    });
+  };
+
   return (
     <>
       <div className="w-full flex gap-2 items-center justify-end pb-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto py-5">
+            <Button variant="outline" className="ml-auto">
               Views
             </Button>
           </DropdownMenuTrigger>
@@ -119,7 +127,9 @@ export function DataTable<TData, TValue>({
             <DropdownMenuItem className="text-red-500">
               Suspend
             </DropdownMenuItem>
-            <DropdownMenuItem>Ganti Password</DropdownMenuItem>
+            <DropdownMenuItem onSelect={openModalSafely}>
+              Ganti Password cok
+            </DropdownMenuItem>
             <DropdownMenuItem>Ubah Fee</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

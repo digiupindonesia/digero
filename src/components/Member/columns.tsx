@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Member } from "@/type";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { FaLocationArrow } from "react-icons/fa";
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
 import {
@@ -15,6 +15,41 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LuArrowUpDown } from "react-icons/lu";
 import { Checkbox } from "@/components/ui/checkbox";
+
+// ✅ import store zustand
+import { useChangePasswordModal } from "@/stores/changePasswordModal"; // sesuaikan path
+
+// ✅ Komponen sel terpisah agar aman pakai hook
+function ActionCell({ row }: { row: Row<Member> }) {
+  const open = useChangePasswordModal((s) => s.toggle);
+
+  const openModalSafely = () => {
+    // pastikan dropdown close dulu, baru open dialog
+    requestAnimationFrame(() => {
+      useChangePasswordModal.getState().open();
+    });
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <div className="flex items-center p-2 rounded bg-black cursor-pointer mx-auto">
+          <FaLocationArrow className="cursor-pointer text-white" />
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem className="text-red-500">Suspend</DropdownMenuItem>
+
+        {/* 🔗 klik ini akan buka modal via Zustand */}
+        <DropdownMenuItem onClick={openModalSafely}>
+          Ganti Password
+        </DropdownMenuItem>
+
+        <DropdownMenuItem>Ubah Fee</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export const columns: ColumnDef<Member>[] = [
   {
@@ -41,7 +76,6 @@ export const columns: ColumnDef<Member>[] = [
   },
   {
     accessorKey: "name",
-    // header: "Member",
     header: ({ column }) => {
       return (
         <Button
@@ -54,14 +88,8 @@ export const columns: ColumnDef<Member>[] = [
       );
     },
   },
-  {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "phone",
-    header: "Nomor WhatsApp",
-  },
+  { accessorKey: "email", header: "Email" },
+  { accessorKey: "phone", header: "Nomor WhatsApp" },
   {
     accessorKey: "accountLinked",
     header: "Akun Tertaut",
@@ -99,27 +127,11 @@ export const columns: ColumnDef<Member>[] = [
     cell: ({ row }) => {
       const fee = row.getValue("fee") as number;
       return <p>{fee}%</p>;
-    }
+    },
   },
   {
     header: "Action",
-    cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <div className="flex items-center p-2 rounded bg-black cursor-pointer mx-auto">
-              <FaLocationArrow className="cursor-pointer text-white" />
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem className="text-red-500">
-              Suspend
-            </DropdownMenuItem>
-            <DropdownMenuItem>Ganti Password</DropdownMenuItem>
-            <DropdownMenuItem>Ubah Fee</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    // ✅ pakai komponen khusus supaya aman pakai hook
+    cell: ({ row }) => <ActionCell row={row} />,
   },
 ];
