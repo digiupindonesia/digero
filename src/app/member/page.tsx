@@ -4,7 +4,7 @@ import ContainerPage from "@/components/ContainerPage";
 import { columns } from "../../components/Member/columns";
 import { DataTable } from "@/components/Member/DataTable";
 import members from "@/assets/data/member.js";
-import { Member } from "@/type";
+import { Member } from "@/types/type";
 import HeaderPage from "@/components/HeaderPage";
 
 export default function Page() {

@@ -19,6 +19,8 @@ import {
 } from "react";
 import { produce } from "immer";
 import axios from "axios";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const URL_REGISTER_USER_POST = `${API_URL}/api/v1/auth/register`;
@@ -40,19 +42,21 @@ type LoginForm = {
 };
 
 export default function Home() {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tab, setTab] = useState<"login" | "register">("login");
-  const router = useRouter();
   const [registerForm, setRegisterForm] = useState<RegisterForm>({
     username: "",
     email: "",
     password: "",
     confirmPass: "",
   });
-
   const [loginForm, setLoginForm] = useState<LoginForm>({
     email: "",
     password: "",
   });
+
+  const { auth, setAuth, clearAuth, updateUser } = useAuthStore();
 
   // visibilitas password
   const [showLoginPass, setShowLoginPass] = useState(false);
@@ -75,45 +79,34 @@ export default function Home() {
     }
   };
 
-  // const pushToast = (text: string, type: Toast["type"]) => {
-  //   const id = Date.now();
-  //   setToasts((t) => [...t, { id, text, type }]);
-  //   setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 4500);
-  // };
-
   const onSubmitLogin: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await axios.post(URL_LOGIN_POST, {
         email: loginForm.email,
         password: loginForm.password,
       });
 
-      if(response.status === 200){
+      if (response.status === 200) {
+        setAuth(response.data.data);
+        router.push("/dashboard");
         notify("Login successful! Welcome back.", "success");
       }
-
     } catch (error: any) {
+      setIsLoading(false);
       notify(
         `Error Logging In: ${error.response?.data?.message || error.message}`,
         "error"
       );
       console.error("Error Logging In:", error);
     }
-    // const fd = new FormData(e.currentTarget);
-    // const email = String(fd.get("email") || "");
-    // const password = String(fd.get("password") || "");
-    // if (!email || !password) return;
-    // pushToast("Logging in...", "info");
-    // setTimeout(
-    //   () => pushToast("Login successful! Welcome back.", "success"),
-    //   1200
-    // );
   };
 
   const onSubmitRegister: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await axios.post(URL_REGISTER_USER_POST, {
         email: registerForm.email,
         username: registerForm.username,
@@ -121,29 +114,19 @@ export default function Home() {
         adminCode: "ADMIN2024",
       });
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
+        setIsLoading(false);
         notify("Registration successful! Please login.", "success");
         setTab("login");
       }
     } catch (error: any) {
+      setIsLoading(false);
       notify(
         `Error Registering: ${error.response?.data?.message || error.message}`,
         "error"
       );
       console.error("Error Registering:", error);
     }
-
-    // const fd = new FormData(e.currentTarget);
-    // const email = String(fd.get("email") || "");
-    // const password = String(fd.get("password") || "");
-    // const confirm = String(fd.get("confirm") || "");
-    // if (!email || !password || !confirm) return;
-    // if (password !== confirm) return notify("Passwords do not match!", "error");
-    // notify("Creating account...", "default");
-    // setTimeout(() => {
-    //   notify("Account created! Please verify your email.", "success");
-    //   setTab("login");
-    // }, 1200);
   };
 
   return (
@@ -262,7 +245,10 @@ export default function Home() {
                   </a>
                 </div> */}
 
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading && (
+                    <AiOutlineLoading3Quarters className="animate-spin h-5 w-5" />
+                  )}
                   Sign In
                 </Button>
               </form>
@@ -401,10 +387,16 @@ export default function Home() {
 
                 <Button
                   type="submit"
-                  disabled={strength < 90}
-                  className="w-full"
+                  disabled={strength < 90 || isLoading}
+                  className={`w-full ${
+                    isLoading && "opacity-60 cursor-not-allowed"
+                  }`}
                 >
-                  Create Account
+                  {isLoading ? (
+                    <AiOutlineLoading3Quarters className="animate-spin h-5 w-5" />
+                  ) : (
+                    "Create Account"
+                  )}
                 </Button>
               </form>
             )}
@@ -509,10 +501,10 @@ function Button({
       {...rest}
       disabled={disabled}
       className={[
-        "inline-flex items-center justify-center rounded-lg font-semibold",
+        "inline-flex items-center justify-center rounded-lg font-semibold cursor-pointer",
         "px-4 py-3 transition-all",
         disabled
-          ? "bg-amber-300 text-zinc-400 opacity-60 cursor-not-allowed shadow-none"
+          ? "bg-amber-300 text-zinc-500 opacity-80 cursor-not-allowed shadow-none"
           : "bg-amber-400 text-zinc-950 shadow-md hover:bg-amber-500 hover:shadow-amber-500/30 -translate-y-0 hover:-translate-y-0.5",
         className,
       ].join(" ")}

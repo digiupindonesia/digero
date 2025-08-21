@@ -3,7 +3,7 @@ import { DataTable } from "@/components/ReqAccount/DataTable";
 import React from "react";
 import { columns } from "@/components/ReqAccount/columns";
 import listReqAccount from "@/assets/data/reqAccount.js";
-import { ListReqAccount } from "@/type";
+import { ListReqAccount } from "@/types/type";
 
 export default function ListReq() {
   return (

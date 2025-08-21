@@ -9,6 +9,7 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { IoExtensionPuzzleOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const links = [
   {
@@ -40,6 +41,7 @@ const links = [
 
 export const Navbar = () => {
   const pathname = usePathname();
+  const {clearAuth} = useAuthStore()
   console.log("Current Pathname:", pathname);
   // Buat array dari semua path yang valid (termasuk logout)
   const validPaths = [...links.map((link) => link.path), "/logout"];
@@ -64,14 +66,14 @@ export const Navbar = () => {
             {links.map(({ Icon, text, path }) => (
               <NavLink
                 key={path}
-                path={path}
+                href={path}
                 Icon={Icon}
                 text={text}
                 active={pathname === path}
               />
             ))}
           </div>
-          <NavLink path={"/"} Icon={MdOutlineLogout} text="Logout" />
+          <NavLink href={"/"} onClick={clearAuth} Icon={MdOutlineLogout} text="Logout" />
         </nav>
       </div>
     </>

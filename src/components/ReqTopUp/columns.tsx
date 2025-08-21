@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ListReqTopUp } from "@/type";
+import { ListReqTopUp } from "@/types/type";
 import { ColumnDef } from "@tanstack/react-table";
 import { FaLocationArrow } from "react-icons/fa";
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
