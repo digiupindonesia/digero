@@ -1,3 +1,4 @@
+import { AuthResponse } from "@/types/type";
 import Link, { LinkProps } from "next/link";
 import React from "react";
 import { IconType } from "react-icons";
@@ -7,6 +8,8 @@ interface NavLinkProps extends LinkProps {
   active?: boolean;
   Icon?: IconType;
   className?: string;
+  isAdmin?: boolean; // Tambahkan properti isAdmin
+  role?: AuthResponse["user"]["role"]; // Tambahkan properti role
 }
 
 const NavLink: React.FC<NavLinkProps> = ({
@@ -14,8 +17,15 @@ const NavLink: React.FC<NavLinkProps> = ({
   text,
   active,
   className,
+  isAdmin = false, // Default ke false jika tidak diberikan
+  role,
   ...linkProps
 }) => {
+  // Jika isAdmin true dan role bukan admin, hide component
+  if (isAdmin && role !== "ADMIN") {
+    return null;
+  }
+
   return (
     <Link
       {...linkProps}

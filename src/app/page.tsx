@@ -247,7 +247,7 @@ export default function Home() {
 
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading && (
-                    <AiOutlineLoading3Quarters className="animate-spin h-5 w-5" />
+                    <AiOutlineLoading3Quarters className="animate-spin h-5 w-5 mr-2" />
                   )}
                   Sign In
                 </Button>
