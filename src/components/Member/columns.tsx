@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Member } from "@/type";
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { Member } from "@/types/type";
+import { ColumnDef } from "@tanstack/react-table";
 import { FaLocationArrow } from "react-icons/fa";
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
 import {

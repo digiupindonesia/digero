@@ -33,7 +33,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ListReqTopUp } from "@/type";
+import { ListReqTopUp } from "@/types/type";
 import {
   Menubar,
   MenubarContent,

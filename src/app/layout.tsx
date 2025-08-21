@@ -2,7 +2,9 @@
 
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
-import { usePathname } from "next/navigation";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const links = [
   { path: "/dashboard" },
@@ -17,13 +19,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { isHydrated, auth } = useAuthStore();
+  const router = useRouter();
   const pathname = usePathname();
 
-  // Buat array dari semua path yang valid (termasuk logout)
+  // path valid untuk layout dengan sidebar
   const validPaths = [...links.map((link) => link.path), "/logout"];
-
-  // Cek apakah pathname saat ini ada dalam validPaths
   const isValidPath = validPaths.includes(pathname);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (!auth && pathname !== "/") {
+      router.replace("/");
+    }
+  }, [isHydrated, auth, pathname, router]);
 
   return (
     <html lang="en">
@@ -39,17 +48,19 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={``}>
-        <div className="layout flex min-h-screen">
-          <Navbar />
-          <main
-            className={`w-full min-h-screen pb-20 xl:pb-0 ${
-              isValidPath ? "xl:pl-72" : ""
-            }`}
-          >
-            {children}
-          </main>
-        </div>
+      <body>
+        {!isHydrated ? null : !auth && pathname !== "/" ? null : (
+          <div className="layout flex min-h-screen">
+            <Navbar />
+            <main
+              className={`w-full min-h-screen pb-20 xl:pb-0 ${
+                isValidPath ? "xl:pl-72" : ""
+              }`}
+            >
+              {children}
+            </main>
+          </div>
+        )}
       </body>
     </html>
   );

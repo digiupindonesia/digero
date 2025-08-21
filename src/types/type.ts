@@ -26,3 +26,19 @@ export type ListReqTopUp = {
   fee: number;
   status: "pending" | "processing" | "complete";
 };
+
+export interface AuthResponse {
+  user: {
+    id: string;
+    email: string;
+    username: string;
+    firstName: string | null;
+    lastName: string | null;
+    role: "USER" | "ADMIN" | string; // kalau role bisa lebih dari USER/ADMIN
+    avatar: string | null;
+    isVerified: boolean;
+  };
+  accessToken: string;
+  refreshToken: string;
+}
+

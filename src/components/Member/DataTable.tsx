@@ -33,7 +33,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Member } from "@/type";
+import { Member } from "@/types/type";
 import { useChangePasswordModal } from "@/stores/changePasswordModal";
 
 interface DataTableProps<TData, TValue> {

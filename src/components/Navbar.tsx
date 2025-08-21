@@ -9,37 +9,45 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { IoExtensionPuzzleOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const links = [
   {
     Icon: MdOutlineDashboardCustomize,
     text: "Dashboard",
     path: "/dashboard",
+    isAdmin:false
   },
   {
     Icon: BiCartDownload,
     text: "Order Topup",
     path: "/topup",
+    isAdmin:false
   },
   {
     Icon: BiCartAdd,
     text: "Request Akun",
     path: "/request-account",
+    isAdmin:false
   },
   {
     Icon: FaRegUserCircle,
     text: "Data Member",
     path: "/member",
+    isAdmin:true
   },
   {
     Icon: IoExtensionPuzzleOutline,
     text: "Settings",
     path: "/settings",
+    isAdmin:false
   },
 ];
 
 export const Navbar = () => {
   const pathname = usePathname();
+  const {auth} = useAuthStore();
+  const {clearAuth} = useAuthStore()
   console.log("Current Pathname:", pathname);
   // Buat array dari semua path yang valid (termasuk logout)
   const validPaths = [...links.map((link) => link.path), "/logout"];
@@ -51,6 +59,7 @@ export const Navbar = () => {
   if (!isValidPath) {
     return null;
   }
+  
 
   return (
     <>
@@ -61,17 +70,19 @@ export const Navbar = () => {
         />
         <nav className="flex flex-1 flex-row xl:flex-col justify-between py-4 px-5 md:px-20 xl:p-5 2xl:p-10">
           <div className="flex xl:flex-col flex-row gap-2">
-            {links.map(({ Icon, text, path }) => (
+            {links.map(({ Icon, text, path, isAdmin }) => (
               <NavLink
                 key={path}
-                path={path}
+                href={path}
                 Icon={Icon}
                 text={text}
                 active={pathname === path}
+                isAdmin={isAdmin} // Pass isAdmin prop
+                role={auth?.user?.role} // Pass role prop
               />
             ))}
           </div>
-          <NavLink path={"/"} Icon={MdOutlineLogout} text="Logout" />
+          <NavLink href={"/"} onClick={clearAuth} Icon={MdOutlineLogout} text="Logout" />
         </nav>
       </div>
     </>
