@@ -32,7 +32,7 @@ export default function Page() {
         </ContainerComponent>
       </ContainerPage>
 
-      <Dialog open={openModal} onOpenChange={(v) => setOpenModal(v)}>
+      <Dialog open={openModal} onOpenChange={(v:boolean) => setOpenModal(v)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
