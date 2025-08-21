@@ -19,21 +19,78 @@ import { FaPlus } from "react-icons/fa6";
 import { TbApi } from "react-icons/tb";
 import Textarea from "@/components/Textarea";
 import { useAuthStore } from "@/stores/useAuthStore";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const GET_PROFILE = `${API_URL}/api/v1/profile/me`;
+
+type Profile = {
+  id: string;
+  email: string;
+  username: string;
+  firstName: string | null;
+  lastName: string | null;
+  avatar: string | null;
+  whatsappNumber: string | null;
+  role: "ADMIN" | "USER" | string; // bisa dipersempit jika role hanya dua
+  isActive: boolean;
+  isVerified: boolean;
+  createdAt: string; // ISO Date string
+  updatedAt: string; // ISO Date string
+};
 
 const Page = () => {
-  const { auth } = useAuthStore();
+  const { auth, isHydrated } = useAuthStore();
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  const fetchProfile = async () => {
+    try {
+      const response = await axios.get(GET_PROFILE, {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
+      });
+
+      if (response.status === 200) {
+        console.log("Profile fetched successfully:", response.data);
+        setProfile(response.data.data);
+      }
+    } catch (error: any) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isHydrated && auth?.accessToken) {
+      fetchProfile();
+    }
+  }, [auth, isHydrated]);
+
+  console.log("Profile:", profile);
 
   return (
     <ContainerPage title="Setting">
       <ContainerComponent title="Profile Setting">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:bg-white md:p-6 md:rounded-lg">
-          <Input Icon={AiOutlineUser} placeholder="Username" className="my-1" />
+          <Input
+            Icon={AiOutlineUser}
+            placeholder="Username"
+            className="my-1"
+            value={profile?.username || ""}
+          />
           <Input
             Icon={FaWhatsapp}
             placeholder="Nomor Whatsapp"
             className="my-1"
+            value={profile?.whatsappNumber || ""}
           />
-          <Input Icon={FaRegEnvelope} placeholder="Email" className="my-1" />
+          <Input
+            Icon={FaRegEnvelope}
+            placeholder="Email"
+            className="my-1"
+            value={profile?.email || ""}
+          />
           <Input
             Icon={CgPassword}
             placeholder="Password lama"

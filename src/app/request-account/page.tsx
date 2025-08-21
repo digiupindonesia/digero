@@ -1,3 +1,5 @@
+"use client";
+
 import ContainerPage from "@/components/ContainerPage";
 import React from "react";
 import FormReq from "../views/request-account/FormReq";
