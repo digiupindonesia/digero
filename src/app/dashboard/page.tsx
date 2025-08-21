@@ -33,6 +33,7 @@ import {
 import { Crown } from "lucide-react";
 import feeCalculator from "@/utils/feeCalculator";
 import formatCurrency from "@/utils/formatCurrency";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const dummyData = [
   {
@@ -126,6 +127,7 @@ const dummyStatusData = [
 ];
 
 export default function Page() {
+  const { auth } = useAuthStore();
 
   return (
     <ContainerPage title="Dashboard" isHeader={false}>
@@ -140,24 +142,28 @@ export default function Page() {
             <RangeDatePicker />
           </div>
           <div className="md:p-5 lg:p-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            <CardDashboard
-              title="Jumlah Member"
-              value={98}
-              isCurrency={false}
-              icon={MdOutlineDashboardCustomize}
-            />
-            <CardDashboard
-              title="Jumlah Freq Top Up"
-              value={98}
-              isCurrency={false}
-              icon={MdOutlineDashboardCustomize}
-            />
-            <CardDashboard
-              title="AVG Freq Top Up"
-              value={98}
-              isCurrency
-              icon={MdOutlineDashboardCustomize}
-            />
+            {auth?.user.role === "ADMIN" && (
+              <>
+                <CardDashboard
+                  title="Jumlah Member"
+                  value={98}
+                  isCurrency={false}
+                  icon={MdOutlineDashboardCustomize}
+                />
+                <CardDashboard
+                  title="Jumlah Freq Top Up"
+                  value={98}
+                  isCurrency={false}
+                  icon={MdOutlineDashboardCustomize}
+                />
+                <CardDashboard
+                  title="AVG Freq Top Up"
+                  value={98}
+                  isCurrency={false}
+                  icon={MdOutlineDashboardCustomize}
+                />
+              </>
+            )}
             <CardDashboard
               title="Total Nominal Top Up"
               value={20000000}
@@ -203,47 +209,55 @@ export default function Page() {
                 </div>
               </div>
             </div>
-            <CustomCardDashboard
-              icon={MdOutlineDashboardCustomize}
-              title="Best Member Total Topup"
-            >
-              <Table className="text-sm">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-10 text-center">#</TableHead>
-                    <TableHead>Nama</TableHead>
-                    <TableHead className="w-40">Freq Topup</TableHead>
-                    <TableHead className="w-52">Total</TableHead>
-                    <TableHead className="w-24">Fee</TableHead>
-                    <TableHead className="w-40">Fee (Rp)</TableHead>
-                  </TableRow>
-                </TableHeader>
-
-                <TableBody className="font-variant-numeric tabular-nums">
-                  {dummyData.map((item, i) => (
-                    <TableRow key={i}>
-                      <TableCell className="text-center">
-                        {i === 0 ? <Crown className="inline h-4 w-4" /> : i + 1}
-                      </TableCell>
-                      <TableCell className="font-medium">{item.name}</TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        {item.topupFreq} Kali Topup
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        Total Rp {formatCurrency(item.amount)}
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        Fee {item.fee}%
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        Rp{" "}
-                        {formatCurrency(feeCalculator(item.amount, item.fee))}
-                      </TableCell>
+            {auth?.user.role === "ADMIN" && (
+              <CustomCardDashboard
+                icon={MdOutlineDashboardCustomize}
+                title="Best Member Total Topup"
+              >
+                <Table className="text-sm">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-10 text-center">#</TableHead>
+                      <TableHead>Nama</TableHead>
+                      <TableHead className="w-40">Freq Topup</TableHead>
+                      <TableHead className="w-52">Total</TableHead>
+                      <TableHead className="w-24">Fee</TableHead>
+                      <TableHead className="w-40">Fee (Rp)</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CustomCardDashboard>
+                  </TableHeader>
+
+                  <TableBody className="font-variant-numeric tabular-nums">
+                    {dummyData.map((item, i) => (
+                      <TableRow key={i}>
+                        <TableCell className="text-center">
+                          {i === 0 ? (
+                            <Crown className="inline h-4 w-4" />
+                          ) : (
+                            i + 1
+                          )}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {item.name}
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          {item.topupFreq} Kali Topup
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          Total Rp {formatCurrency(item.amount)}
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          Fee {item.fee}%
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          Rp{" "}
+                          {formatCurrency(feeCalculator(item.amount, item.fee))}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CustomCardDashboard>
+            )}
           </div>
         </div>
       </ContainerComponent>
