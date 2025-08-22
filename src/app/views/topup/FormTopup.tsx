@@ -1,9 +1,8 @@
 "use client";
 
 import ContainerComponent from "@/components/ContainerComponent";
-import Input from "@/components/Input";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegAddressCard } from "react-icons/fa6";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { IoBagAddOutline } from "react-icons/io5";
@@ -13,6 +12,12 @@ import Image from "next/image";
 import IconBCA from "@/assets/img/bca.png";
 import IconMandiri from "@/assets/img/mandiri.png";
 import SelectWithIcon from "@/components/Select";
+import { useAuthStore } from "@/stores/useAuthStore";
+import axios from "axios";
+import { ListAdsAccount } from "@/types/type";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const GET_AKUN_IKLAN_GET = `${API_URL}/api/v1/account-requests/my`;
 
 const BankOptions = [
   {
@@ -48,7 +53,37 @@ const dummyAccount = [
   { label: "Akun 5", value: "akun5" },
 ];
 
-export default function FormOrder() {
+type FormTopUpProps = {
+  page: string;
+  setPage: (page: string) => void;
+};
+
+export default function FormTopUp({ page, setPage }: FormTopUpProps) {
+  const { auth, isHydrated } = useAuthStore();
+  const [adsAccount, setAdsAccount] = useState<ListAdsAccount[]>([]);
+
+  const getAkunIklan = async () => {
+    try {
+      const response = await axios.get(GET_AKUN_IKLAN_GET, {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setAdsAccount(response.data.data);
+      }
+    } catch (error: any) {
+      console.log("Error fetching accounts:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isHydrated && auth?.accessToken) {
+      getAkunIklan();
+    }
+  }, [auth, isHydrated]);
+
   return (
     <ContainerComponent title="Form Order">
       <div className="md:bg-white md:rounded-lg py-10 md:py-20 flex flex-col xl:flex-row-reverse gap-10 xl:gap-0">
@@ -93,7 +128,14 @@ export default function FormOrder() {
               <p className="text-base font-normal">Jumlah Nominal</p>
             </div>
             <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
-              <SelectWithIcon Icon={FaRegAddressCard} options={dummyNominal} className="w-full font-semibold" placeholder="Pilih Nominal Top Up" />
+              <SelectWithIcon
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+                Icon={FaRegAddressCard}
+                options={dummyNominal}
+                className="w-full font-semibold"
+                placeholder="Pilih Nominal Top Up"
+              />
             </div>
           </div>
           <div className="w-full flex flex-col gap-2">
@@ -101,7 +143,14 @@ export default function FormOrder() {
               <p className="text-base font-normal">Pilih Akun Iklan</p>
             </div>
             <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
-              <SelectWithIcon Icon={HiOutlineBadgeCheck} options={dummyAccount} className="w-full font-semibold" placeholder="Pilih Akun Iklan" />
+              <SelectWithIcon
+                Icon={HiOutlineBadgeCheck}
+                options={adsAccount.filter((account) => account.status === "APPROVED")}
+                getOptionLabel={(option) => option.accountName}
+                getOptionValue={(option) => option.id}
+                className="w-full font-semibold"
+                placeholder="Pilih Akun Iklan"
+              />
             </div>
           </div>
           <Button className="flex items-center gap-2 bg-black w-full text-white py-5 text-base rounded">

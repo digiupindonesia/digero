@@ -1,3 +1,4 @@
+// dummy
 export type Member = {
   id: string;
   name: string;
@@ -27,6 +28,7 @@ export type ListReqTopUp = {
   status: "pending" | "processing" | "complete";
 };
 
+// real
 export interface AuthResponse {
   user: {
     id: string;
@@ -69,3 +71,29 @@ export interface SummaryAdmin {
   totalTopups: number;
   statusBreakdown: Record<StatusKey, StatusDetail>;
 }
+
+// Status permintaan (dapat ditambah sesuai kebutuhan domain)
+type AccountRequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "CANCELED";
+
+// Representasi user yang melakukan request
+interface RequestedBy {
+  id: string;
+  email: string;
+  username: string;
+  firstName: string | null;
+  lastName: string | null;
+}
+
+// Payload utama sesuai struktur yang diberikan
+export interface ListAdsAccount {
+  id: string;
+  accountName: string;
+  businessCenterId: string; // gunakan string karena ID bisa sangat panjang
+  status: AccountRequestStatus;
+  rejectionReason: string | null;
+  requestedByUserId: string;
+  createdAt: string; // ISO datetime string
+  updatedAt: string; // ISO datetime string
+  requestedBy: RequestedBy;
+}
+
