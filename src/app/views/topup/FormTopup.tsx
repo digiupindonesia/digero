@@ -14,7 +14,7 @@ import IconMandiri from "@/assets/img/mandiri.png";
 import SelectWithIcon from "@/components/Select";
 import { useAuthStore } from "@/stores/useAuthStore";
 import axios from "axios";
-import { ListAdsAccount } from "@/types/type";
+import { ListReqAccount } from "@/types/type";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_AKUN_IKLAN_GET = `${API_URL}/api/v1/account-requests/my`;
@@ -60,7 +60,7 @@ type FormTopUpProps = {
 
 export default function FormTopUp({ page, setPage }: FormTopUpProps) {
   const { auth, isHydrated } = useAuthStore();
-  const [adsAccount, setAdsAccount] = useState<ListAdsAccount[]>([]);
+  const [adsAccount, setAdsAccount] = useState<ListReqAccount[]>([]);
 
   const getAkunIklan = async () => {
     try {

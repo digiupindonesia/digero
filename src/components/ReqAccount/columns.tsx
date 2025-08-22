@@ -40,7 +40,7 @@ export const columns: ColumnDef<ListReqAccount>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "datetime",
+    accessorKey: "createdAt",
     // header: "Member",
     header: ({ column }) => {
       return (
@@ -55,7 +55,7 @@ export const columns: ColumnDef<ListReqAccount>[] = [
     },
   },
   {
-    accessorKey: "name",
+    accessorKey: "requestedBy.username",
     header: "Member",
   },
   {
@@ -63,7 +63,7 @@ export const columns: ColumnDef<ListReqAccount>[] = [
     header: "Nama Akun",
   },
   {
-    accessorKey: "idbc",
+    accessorKey: "businessCenterId",
     header: "ID Business Center",
   },
   {
@@ -82,8 +82,12 @@ export const columns: ColumnDef<ListReqAccount>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {/* <DropdownMenuItem>Pending</DropdownMenuItem> */}
-            <DropdownMenuItem className="text-yellow-500">Move to Processing</DropdownMenuItem>
-            <DropdownMenuItem className="text-green-500">Move to Added</DropdownMenuItem>
+            <DropdownMenuItem className="text-yellow-500">
+              Move to Processing
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-green-500">
+              Move to Added
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

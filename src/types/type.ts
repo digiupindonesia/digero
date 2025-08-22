@@ -9,14 +9,14 @@ export type Member = {
   suspended: boolean;
 };
 
-export type ListReqAccount = {
-  id: string;
-  datetime: string;
-  name: string;
-  accountName: string;
-  idbc: string;
-  status: "pending" | "processing" | "added";
-};
+// export type ListReqAccount = {
+//   id: string;
+//   datetime: string;
+//   name: string;
+//   accountName: string;
+//   idbc: string;
+//   status: "pending" | "processing" | "added";
+// };
 
 export type ListReqTopUp = {
   id: string;
@@ -85,7 +85,7 @@ interface RequestedBy {
 }
 
 // Payload utama sesuai struktur yang diberikan
-export interface ListAdsAccount {
+export interface ListReqAccount {
   id: string;
   accountName: string;
   businessCenterId: string; // gunakan string karena ID bisa sangat panjang

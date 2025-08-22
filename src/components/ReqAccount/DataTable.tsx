@@ -58,7 +58,7 @@ export function DataTable({ columns, data }: DataTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
   // Filter data berdasarkan status dengan useMemo untuk optimasi
   const filteredData = useMemo(() => {
@@ -71,9 +71,11 @@ export function DataTable({ columns, data }: DataTableProps) {
   const statusCounts = useMemo(() => {
     return {
       all: data.length,
-      pending: data.filter((item) => item.status === "pending").length,
-      processing: data.filter((item) => item.status === "processing").length,
-      added: data.filter((item) => item.status === "added").length,
+      pending: data.filter((item) => item.status === "PENDING").length,
+      approved: data.filter((item) => item.status === "APPROVED").length,
+      rejected: data.filter((item) => item.status === "REJECTED").length,
+      canceled: data.filter((item) => item.status === "CANCELED").length,
+      // added: data.filter((item) => item.status === "added").length,
     };
   }, [data]);
 
@@ -106,7 +108,7 @@ export function DataTable({ columns, data }: DataTableProps) {
         <Menubar className="hidden lg:flex">
           <MenubarMenu>
             <MenubarTrigger
-              onClick={() => handleStatusFilter("all")}
+              onClick={() => handleStatusFilter("ALL")}
               className={`${
                 statusFilter === "all" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
@@ -117,7 +119,7 @@ export function DataTable({ columns, data }: DataTableProps) {
           </MenubarMenu>
           <MenubarMenu>
             <MenubarTrigger
-              onClick={() => handleStatusFilter("pending")}
+              onClick={() => handleStatusFilter("PENDING")}
               className={`${
                 statusFilter === "pending" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
@@ -126,7 +128,7 @@ export function DataTable({ columns, data }: DataTableProps) {
               Pending ({statusCounts.pending})
             </MenubarTrigger>
           </MenubarMenu>
-          <MenubarMenu>
+          {/* <MenubarMenu>
             <MenubarTrigger
               onClick={() => handleStatusFilter("processing")}
               className={`${
@@ -136,16 +138,16 @@ export function DataTable({ columns, data }: DataTableProps) {
               <FaCheck className="text-lg" />
               Processing ({statusCounts.processing})
             </MenubarTrigger>
-          </MenubarMenu>
+          </MenubarMenu> */}
           <MenubarMenu>
             <MenubarTrigger
-              onClick={() => handleStatusFilter("added")}
+              onClick={() => handleStatusFilter("APPROVED")}
               className={`${
-                statusFilter === "complete" ? "text-yellow-500" : ""
+                statusFilter === "APPROVED" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
               <FaCheckDouble className="text-lg" />
-              Added ({statusCounts.added})
+              Approved ({statusCounts.approved})
             </MenubarTrigger>
           </MenubarMenu>
         </Menubar>
@@ -180,7 +182,7 @@ export function DataTable({ columns, data }: DataTableProps) {
               </span>
             </DropdownMenuItem>
 
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={() => handleStatusFilter("processing")}
               className={statusFilter === "processing" ? "text-yellow-500" : ""}
             >
@@ -189,7 +191,7 @@ export function DataTable({ columns, data }: DataTableProps) {
               <span className="text-muted-foreground">
                 ({statusCounts.processing})
               </span>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
 
             <DropdownMenuItem
               onClick={() => handleStatusFilter("added")}
@@ -198,7 +200,7 @@ export function DataTable({ columns, data }: DataTableProps) {
               <FaCheckDouble className="mr-2 text-lg" />
               <span className="flex-1">Added</span>
               <span className="text-muted-foreground">
-                ({statusCounts.added})
+                ({statusCounts.approved})
               </span>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -235,9 +237,15 @@ export function DataTable({ columns, data }: DataTableProps) {
             Icon={FaSearch}
             className="w-full py-0"
             placeholder="Filter IDBC..."
-            value={(table.getColumn("idbc")?.getFilterValue() as string) ?? ""}
+            value={
+              (table
+                .getColumn("businessCenterId")
+                ?.getFilterValue() as string) ?? ""
+            }
             onChange={(event) =>
-              table.getColumn("idbc")?.setFilterValue(event.target.value)
+              table
+                .getColumn("businessCenterId")
+                ?.setFilterValue(event.target.value)
             }
           />
         </div>
@@ -258,13 +266,17 @@ export function DataTable({ columns, data }: DataTableProps) {
             </DropdownMenuItem>
             <DropdownMenuItem
               // onClick={() => setStatusFilter("processing")}
-              className={`${statusFilter === "processing" ? "bg-gray-100" : ""} text-yellow-500`}
+              className={`${
+                statusFilter === "processing" ? "bg-gray-100" : ""
+              } text-yellow-500`}
             >
               Move to Processing
             </DropdownMenuItem>
             <DropdownMenuItem
               // onClick={() => setStatusFilter("added")}
-              className={`${statusFilter === "added" ? "bg-gray-100" : ""} text-green-500`}
+              className={`${
+                statusFilter === "added" ? "bg-gray-100" : ""
+              } text-green-500`}
             >
               Move to Added
             </DropdownMenuItem>
