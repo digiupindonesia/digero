@@ -75,7 +75,7 @@ export const columns: ColumnDef<Member>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "memberName",
     header: ({ column }) => {
       return (
         <Button
@@ -89,43 +89,43 @@ export const columns: ColumnDef<Member>[] = [
     },
   },
   { accessorKey: "email", header: "Email" },
-  { accessorKey: "phone", header: "Nomor WhatsApp" },
+  { accessorKey: "whatsappNumber", header: "Nomor WhatsApp" },
   {
     accessorKey: "accountLinked",
     header: "Akun Tertaut",
-    cell: ({ row }) => {
-      const accountLinked = row.getValue("accountLinked") as string[];
+    // cell: ({ row }) => {
+    //   const accountLinked = row.getValue("accountLinked") as string[];
 
-      if (accountLinked.length <= 1) {
-        return <p>{accountLinked[0] || "No account"}</p>;
-      }
+    //   if (accountLinked.length <= 1) {
+    //     return <p>{accountLinked[0] || "No account"}</p>;
+    //   }
 
-      return (
-        <div className="flex items-center gap-2">
-          <p>{accountLinked[0]}</p>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="p-1">
-                <HiOutlineDotsCircleHorizontal className="h-4 w-4 cursor-pointer" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuLabel>All Linked Accounts</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {accountLinked.map((account, index) => (
-                <DropdownMenuItem key={index}>{account}</DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
+    //   return (
+    //     <div className="flex items-center gap-2">
+    //       <p>{accountLinked[0]}</p>
+    //       <DropdownMenu>
+    //         <DropdownMenuTrigger asChild>
+    //           <Button variant="ghost" size="sm" className="p-1">
+    //             <HiOutlineDotsCircleHorizontal className="h-4 w-4 cursor-pointer" />
+    //           </Button>
+    //         </DropdownMenuTrigger>
+    //         <DropdownMenuContent align="start">
+    //           <DropdownMenuLabel>All Linked Accounts</DropdownMenuLabel>
+    //           <DropdownMenuSeparator />
+    //           {accountLinked.map((account, index) => (
+    //             <DropdownMenuItem key={index}>{account}</DropdownMenuItem>
+    //           ))}
+    //         </DropdownMenuContent>
+    //       </DropdownMenu>
+    //     </div>
+    //   );
+    // },
   },
   {
-    accessorKey: "fee",
+    accessorKey: "feePercent",
     header: "Fee %",
     cell: ({ row }) => {
-      const fee = row.getValue("fee") as number;
+      const fee = row.getValue("feePercent") as number;
       return <p>{fee}%</p>;
     },
   },

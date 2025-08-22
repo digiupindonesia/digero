@@ -1,13 +1,16 @@
 // dummy
-export type Member = {
+export interface Member {
   id: string;
-  name: string;
+  memberName: string;
   email: string;
-  phone: number;
-  accountLinked: string[];
-  fee: number;
-  suspended: boolean;
-};
+  whatsappNumber: string | null;
+  feePercent: number;
+  isActive: boolean;
+  isVerified: boolean;
+  lastLoginAt: string;   // bisa juga Date jika Anda parse ke objek Date
+  createdAt: string;     // sama, bisa Date tergantung kebutuhan
+}
+
 
 // export type ListReqAccount = {
 //   id: string;
