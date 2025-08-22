@@ -62,7 +62,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 
   // Filter data berdasarkan status dengan useMemo untuk optimasi
   const filteredData = useMemo(() => {
-    return statusFilter === "all"
+    return statusFilter === "ALL"
       ? data
       : data.filter((item) => item.status === statusFilter);
   }, [data, statusFilter]);
@@ -110,7 +110,7 @@ export function DataTable({ columns, data }: DataTableProps) {
             <MenubarTrigger
               onClick={() => handleStatusFilter("ALL")}
               className={`${
-                statusFilter === "all" ? "text-yellow-500" : ""
+                statusFilter === "ALL" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
               <MdOutlineFilterList className="text-lg" />
@@ -121,7 +121,7 @@ export function DataTable({ columns, data }: DataTableProps) {
             <MenubarTrigger
               onClick={() => handleStatusFilter("PENDING")}
               className={`${
-                statusFilter === "pending" ? "text-yellow-500" : ""
+                statusFilter === "PENDING" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
               <MdAccessTime className="text-lg" />

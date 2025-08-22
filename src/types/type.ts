@@ -33,6 +33,7 @@ export interface AuthResponse {
   user: {
     id: string;
     email: string;
+    feePercent:number;
     username: string;
     firstName: string | null;
     lastName: string | null;

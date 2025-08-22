@@ -2,7 +2,7 @@
 
 import ContainerComponent from "@/components/ContainerComponent";
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { FaRegAddressCard } from "react-icons/fa6";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { IoBagAddOutline } from "react-icons/io5";
@@ -15,19 +15,23 @@ import SelectWithIcon from "@/components/Select";
 import { useAuthStore } from "@/stores/useAuthStore";
 import axios from "axios";
 import { ListReqAccount } from "@/types/type";
+import { produce } from "immer";
+import formatCurrency from "@/utils/formatCurrency";
+import { useRandomNumberStore } from "@/stores/randomNumber";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_AKUN_IKLAN_GET = `${API_URL}/api/v1/account-requests/my`;
+const TOPUP_POST = `${API_URL}/api/payment`;
 
 const BankOptions = [
   {
     title: "Mandiri",
-    value: "mandiri",
+    value: "MANDIRI",
     icon: IconMandiri,
   },
   {
     title: "BCA",
-    value: "bca",
+    value: "BCA",
     icon: IconBCA,
   },
 ];
@@ -45,14 +49,6 @@ const dummyNominal = [
   { label: "Rp 10.000.000", value: 10000000 },
 ];
 
-const dummyAccount = [
-  { label: "Akun 1", value: "akun1" },
-  { label: "Akun 2", value: "akun2" },
-  { label: "Akun 3", value: "akun3" },
-  { label: "Akun 4", value: "akun4" },
-  { label: "Akun 5", value: "akun5" },
-];
-
 type FormTopUpProps = {
   page: string;
   setPage: (page: string) => void;
@@ -61,6 +57,31 @@ type FormTopUpProps = {
 export default function FormTopUp({ page, setPage }: FormTopUpProps) {
   const { auth, isHydrated } = useAuthStore();
   const [adsAccount, setAdsAccount] = useState<ListReqAccount[]>([]);
+  const [topUp, setTopUp] = useState<{
+    amount: number;
+    accountRequestId: string;
+    paymentMethod: string;
+  }>({
+    amount: 0,
+    accountRequestId: "",
+    paymentMethod: "",
+  });
+  const { number } = useRandomNumberStore();
+
+  // Hitung total amount menggunakan useMemo untuk menghindari infinite loop
+  const calculatedTotal = useMemo(() => {
+    const fee = auth?.user?.feePercent ?? 0;
+    const amount = topUp.amount;
+    const uniqueCode = number;
+
+    return (fee / 100) * amount + amount + uniqueCode;
+  }, [auth?.user?.feePercent, topUp.amount, number]);
+
+  // Hitung fee amount
+  const feeAmount = useMemo(() => {
+    const fee = auth?.user?.feePercent ?? 0;
+    return (fee / 100) * topUp.amount;
+  }, [auth?.user?.feePercent, topUp.amount]);
 
   const getAkunIklan = async () => {
     try {
@@ -78,18 +99,41 @@ export default function FormTopUp({ page, setPage }: FormTopUpProps) {
     }
   };
 
+  const submitTopUp = async () => {
+    try {
+      const response = await axios.post(TOPUP_POST, {
+        amount: calculatedTotal,
+        accountRequestId: topUp.accountRequestId,
+        paymentMethod: topUp.paymentMethod,
+      });
+    } catch (error: any) {
+      console.error("Error submitting top-up:", error);
+    }
+  };
+
   useEffect(() => {
     if (isHydrated && auth?.accessToken) {
       getAkunIklan();
     }
   }, [auth, isHydrated]);
 
+  console.log("topup", topUp);
+
   return (
     <ContainerComponent title="Form Order">
       <div className="md:bg-white md:rounded-lg py-10 md:py-20 flex flex-col xl:flex-row-reverse gap-10 xl:gap-0">
         <div className="flex flex-col gap-8 mx-auto max-w-sm w-full">
           <p className="text-base font-normal">Pilih Metode Pembayaran</p>
-          <RadioGroup defaultValue="mandiri">
+          <RadioGroup
+            defaultValue="mandiri"
+            onValueChange={(value) => {
+              setTopUp(
+                produce(topUp, (draft) => {
+                  draft.paymentMethod = value;
+                })
+              );
+            }}
+          >
             {BankOptions.map((bank) => (
               <div key={bank.value} className="flex items-center space-x-2">
                 <RadioGroupItem value={bank.value} id={bank.value} />
@@ -105,19 +149,27 @@ export default function FormTopUp({ page, setPage }: FormTopUpProps) {
           <div className="flex w-full flex-col gap-3">
             <div className="w-full flex justify-between items-center">
               <p className="text-base font-normal">Subtotal:</p>
-              <p className="text-base font-normal">Rp. 100.000</p>
+              <p className="text-base font-normal">
+                {formatCurrency(topUp.amount)}
+              </p>
             </div>
             <div className="w-full flex justify-between items-center">
-              <p className="text-base font-normal">Fee 5%:</p>
-              <p className="text-base font-normal">Rp. 5.000</p>
+              <p className="text-base font-normal">
+                Fee {auth?.user.feePercent}%:
+              </p>
+              <p className="text-base font-normal">
+                {formatCurrency(feeAmount)}
+              </p>
             </div>
             <div className="w-full flex justify-between items-center">
               <p className="text-base font-normal">Kode Unik:</p>
-              <p className="text-base font-normal">Rp. 21</p>
+              <p className="text-base font-normal">{formatCurrency(number)}</p>
             </div>
             <div className="w-full flex justify-between items-center">
               <p className="text-base font-bold">Total:</p>
-              <p className="text-base font-bold">Rp 10.050.021</p>
+              <p className="text-base font-bold">
+                {formatCurrency(calculatedTotal)}
+              </p>
             </div>
           </div>
         </div>
@@ -135,6 +187,13 @@ export default function FormTopUp({ page, setPage }: FormTopUpProps) {
                 options={dummyNominal}
                 className="w-full font-semibold"
                 placeholder="Pilih Nominal Top Up"
+                onValueChange={(e) =>
+                  setTopUp(
+                    produce(topUp, (draft) => {
+                      draft.amount = Number(e);
+                    })
+                  )
+                }
               />
             </div>
           </div>
@@ -145,11 +204,20 @@ export default function FormTopUp({ page, setPage }: FormTopUpProps) {
             <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
               <SelectWithIcon
                 Icon={HiOutlineBadgeCheck}
-                options={adsAccount.filter((account) => account.status === "APPROVED")}
+                options={adsAccount.filter(
+                  (account) => account.status === "APPROVED"
+                )}
                 getOptionLabel={(option) => option.accountName}
                 getOptionValue={(option) => option.id}
                 className="w-full font-semibold"
                 placeholder="Pilih Akun Iklan"
+                onValueChange={(e) =>
+                  setTopUp(
+                    produce(topUp, (draft) => {
+                      draft.accountRequestId = e;
+                    })
+                  )
+                }
               />
             </div>
           </div>

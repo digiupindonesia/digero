@@ -133,6 +133,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const SUMMARY_ADMIN_GET = `${API_URL}/api/v1/admin/analytics/summary`;
 const SUMMARY_USER_GET = `${API_URL}/api/v1/analytics/summary`;
 const TREND_ADMIN_GET = `${API_URL}/api/v1/admin/analytics/trends`;
+const BEST_MEMBER_GET = `${API_URL}/api/v1/admin/analytics/top-members`;
 
 export default function Page() {
   const { auth, isHydrated } = useAuthStore();
@@ -229,12 +230,32 @@ export default function Page() {
     }
   };
 
+  const getBestMember = async () => {
+    try{
+      const response = await axios.get(BEST_MEMBER_GET,{
+        headers:{
+          Authorization: `Bearer ${auth?.accessToken}`,
+        }
+      })
+
+      if(response.status === 200){
+        console.log("Best member data:", response.data);
+      }
+    }catch(error:any){
+      console.error("Error fetching best member data:", error);
+    }
+  }
+
   useEffect(() => {
     if (isHydrated && auth?.accessToken) {
       if (auth?.user.role === "ADMIN") {
         getSummaryAdmin();
         getTrendAdmin();
+        getBestMember();
       }
+
+      // if(auth?.user.role === "USER"){
+      // }
     }
   }, [auth, isHydrated]);
 

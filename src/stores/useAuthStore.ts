@@ -5,7 +5,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { AuthResponse } from "@/types/type";
 
-const AUTH_STORE_VERSION = 1;
+const AUTH_STORE_VERSION = 2;
 
 type AuthState = {
   auth: AuthResponse | null;
@@ -57,8 +57,19 @@ export const useAuthStore = create<AuthState>()(
 
       migrate: (persistedState: any, version) => {
         switch (version) {
-          case 0:
-            return persistedState;
+            case 0:
+              return persistedState;
+            case 1:
+              return {
+                ...persistedState,
+                auth: {
+                  ...persistedState.auth,
+                  user: {
+                    ...persistedState.auth.user,
+                    feePercent: 0,
+                  },
+                },
+              };
           default:
             return persistedState;
         }

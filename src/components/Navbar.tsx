@@ -10,6 +10,7 @@ import { IoExtensionPuzzleOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useRandomNumberStore } from "@/stores/randomNumber";
 
 const links = [
   {
@@ -48,6 +49,7 @@ export const Navbar = () => {
   const pathname = usePathname();
   const { auth } = useAuthStore();
   const { clearAuth } = useAuthStore();
+  const {clearNumber} = useRandomNumberStore()
   // Buat array dari semua path yang valid (termasuk logout)
   const validPaths = [...links.map((link) => link.path), "/logout"];
 
@@ -82,7 +84,10 @@ export const Navbar = () => {
           </div>
           <NavLink
             href={"/"}
-            onClick={clearAuth}
+            onClick={() => {
+              clearAuth();
+              clearNumber();
+            }}
             Icon={MdOutlineLogout}
             text="Logout"
           />

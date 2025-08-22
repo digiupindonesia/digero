@@ -22,6 +22,8 @@ import axios from "axios";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { notify } from "@/utils/notify";
+import { useRandomNumberStore } from "@/stores/randomNumber";
+import { getRandomNumber } from "@/utils/randomNumber";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const URL_REGISTER_USER_POST = `${API_URL}/api/v1/auth/register`;
@@ -54,8 +56,8 @@ export default function Home() {
     email: "",
     password: "",
   });
-
   const { auth, setAuth, clearAuth, updateUser } = useAuthStore();
+  const { setNumber } = useRandomNumberStore();
 
   // visibilitas password
   const [showLoginPass, setShowLoginPass] = useState(false);
@@ -77,6 +79,7 @@ export default function Home() {
 
       if (response.status === 200) {
         setAuth(response.data.data);
+        setNumber(getRandomNumber(0, 100));
         router.push("/dashboard");
         notify.success("Login successful! Welcome back.");
       }
