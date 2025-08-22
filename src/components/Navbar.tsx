@@ -16,39 +16,38 @@ const links = [
     Icon: MdOutlineDashboardCustomize,
     text: "Dashboard",
     path: "/dashboard",
-    isAdmin:false
+    isAdmin: false,
   },
   {
     Icon: BiCartDownload,
     text: "Order Topup",
     path: "/topup",
-    isAdmin:false
+    isAdmin: false,
   },
   {
     Icon: BiCartAdd,
     text: "Request Akun",
     path: "/request-account",
-    isAdmin:false
+    isAdmin: false,
   },
   {
     Icon: FaRegUserCircle,
     text: "Data Member",
     path: "/member",
-    isAdmin:true
+    isAdmin: true,
   },
   {
     Icon: IoExtensionPuzzleOutline,
     text: "Settings",
     path: "/settings",
-    isAdmin:false
+    isAdmin: false,
   },
 ];
 
 export const Navbar = () => {
   const pathname = usePathname();
-  const {auth} = useAuthStore();
-  const {clearAuth} = useAuthStore()
-  console.log("Current Pathname:", pathname);
+  const { auth } = useAuthStore();
+  const { clearAuth } = useAuthStore();
   // Buat array dari semua path yang valid (termasuk logout)
   const validPaths = [...links.map((link) => link.path), "/logout"];
 
@@ -59,11 +58,10 @@ export const Navbar = () => {
   if (!isValidPath) {
     return null;
   }
-  
 
   return (
     <>
-      <div className="bg-black text-white w-full fixed bottom-0 xl:fixed xl:top-0 xl:left-0 xl:w-72 xl:h-screen flex flex-col z-50">
+      <div className="bg-black text-white w-full fixed bottom-0 xl:fixed xl:top-0 xl:left-0 xl:w-72 xl:h-screen flex flex-col z-50 bg-[radial-gradient(circle_at_25%_25%,oklch(28.6%_0.066_53.813)_0%,transparent_40%),radial-gradient(circle_at_75%_75%,oklch(28.6%_0.066_53.813)_0%,transparent_40%)]">
         <div
           className="hidden xl:flex w-full h-32 bg-center bg-no-repeat"
           style={{ backgroundImage: "url(/icon/icon.png)" }}
@@ -82,7 +80,12 @@ export const Navbar = () => {
               />
             ))}
           </div>
-          <NavLink href={"/"} onClick={clearAuth} Icon={MdOutlineLogout} text="Logout" />
+          <NavLink
+            href={"/"}
+            onClick={clearAuth}
+            Icon={MdOutlineLogout}
+            text="Logout"
+          />
         </nav>
       </div>
     </>

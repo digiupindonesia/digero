@@ -21,13 +21,12 @@ import { produce } from "immer";
 import axios from "axios";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { notify } from "@/utils/notify";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const URL_REGISTER_USER_POST = `${API_URL}/api/v1/auth/register`;
 const URL_REGISTER_ADMIN_POST = `${API_URL}/api/v1/auth/register-admin`;
 const URL_LOGIN_POST = `${API_URL}/api/v1/auth/login`;
-
-type NotifyType = "success" | "error" | "default";
 
 type RegisterForm = {
   username: string;
@@ -42,7 +41,7 @@ type LoginForm = {
 };
 
 export default function Home() {
-  const router = useRouter()
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tab, setTab] = useState<"login" | "register">("login");
   const [registerForm, setRegisterForm] = useState<RegisterForm>({
@@ -67,18 +66,6 @@ export default function Home() {
   const [regPassword, setRegPassword] = useState("");
   const strength = useMemo(() => calcStrength(regPassword), [regPassword]);
 
-  // toast sederhana
-  const notify = (message: string, type: NotifyType = "default") => {
-    switch (type) {
-      case "success":
-        return toast.success(message);
-      case "error":
-        return toast.error(message);
-      default:
-        return toast(message);
-    }
-  };
-
   const onSubmitLogin: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -91,13 +78,12 @@ export default function Home() {
       if (response.status === 200) {
         setAuth(response.data.data);
         router.push("/dashboard");
-        notify("Login successful! Welcome back.", "success");
+        notify.success("Login successful! Welcome back.");
       }
     } catch (error: any) {
       setIsLoading(false);
-      notify(
-        `Error Logging In: ${error.response?.data?.message || error.message}`,
-        "error"
+      notify.error(
+        `Error Logging In: ${error.response?.data?.message || error.message}`
       );
       console.error("Error Logging In:", error);
     }
@@ -116,14 +102,13 @@ export default function Home() {
 
       if (response.status === 200 || response.status === 201) {
         setIsLoading(false);
-        notify("Registration successful! Please login.", "success");
+        notify.success("Registration successful! Please login.");
         setTab("login");
       }
     } catch (error: any) {
       setIsLoading(false);
-      notify(
-        `Error Registering: ${error.response?.data?.message || error.message}`,
-        "error"
+      notify.error(
+        `Error Registering: ${error.response?.data?.message || error.message}`
       );
       console.error("Error Registering:", error);
     }
