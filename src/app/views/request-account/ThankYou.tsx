@@ -1,8 +1,16 @@
 import ContainerComponent from "@/components/ContainerComponent";
+import { useReqAccStore } from "@/stores/reqAcc";
+import { useAuthStore } from "@/stores/useAuthStore";
 import React from "react";
+import { ToastContainer } from "react-toastify";
 
 export default function ThankYou() {
+  const {form} = useReqAccStore()
+  const {auth} = useAuthStore()
+  
   return (
+    <>
+    <ToastContainer/>
     <ContainerComponent title="Thank You">
       <div className="md:bg-white md:rounded-lg py-10 md:py-20">
         <div className="max-w-2xl w-full mx-auto px-6 text-center">
@@ -12,15 +20,15 @@ export default function ThankYou() {
           {/* Isi, dibikin berjarak antar blok */}
           <div className="mt-10 space-y-12">
             <p className="text-lg leading-relaxed">
-              Terimakasih (username) sudah melakukan Reuest Akun dengan detail
+              Terimakasih {auth?.user?.username} sudah melakukan Reuest Akun dengan detail
             </p>
 
             <div className="space-y-1 text-lg">
               <p>
-                Nama Akun: <span className="font-medium">(akun)</span>
+                Nama Akun: <span className="font-medium">{form.accountName}</span>
               </p>
               <p>
-                ID Business Center: <span className="font-medium">(idbc)</span>
+                ID Business Center: <span className="font-medium">{form.businessCenterId}</span>
               </p>
             </div>
 
@@ -36,5 +44,6 @@ export default function ThankYou() {
         </div>
       </div>
     </ContainerComponent>
+    </>
   );
 }

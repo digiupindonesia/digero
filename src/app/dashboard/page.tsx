@@ -8,7 +8,6 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import RangeDatePicker from "@/components/RangeDatePicker";
 import { CardDashboard } from "@/components/CardDashboard";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
-import BarChartComponent from "@/components/BarChart";
 import { CustomCardDashboard } from "@/components/CustomCardDashboard";
 import {
   BarChart,
@@ -132,6 +131,8 @@ const dummyStatusData = [
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const SUMMARY_ADMIN_GET = `${API_URL}/api/v1/admin/analytics/summary`;
+const SUMMARY_USER_GET = `${API_URL}/api/v1/analytics/summary`;
+const TREND_ADMIN_GET = `${API_URL}/api/v1/admin/analytics/trends`;
 
 export default function Page() {
   const { auth, isHydrated } = useAuthStore();
@@ -165,7 +166,7 @@ export default function Page() {
     },
   });
 
-  const getSummaryData = async () => {
+  const getSummaryAdmin = async () => {
     try {
       const response = await axios.get(
         `${SUMMARY_ADMIN_GET}?from=${formatDateToYMD(
@@ -186,9 +187,54 @@ export default function Page() {
     }
   };
 
+  const getSummaryUser = async () => {
+    try {
+      const response = await axios.get(
+        `${SUMMARY_USER_GET}?from=${formatDateToYMD(
+          date?.from
+        )}&to=${formatDateToYMD(date?.to)}&memberId=`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setSummaryAdmin(response.data.data);
+      }
+    } catch (error: any) {
+      console.error("Error fetching summary data:", error);
+    }
+  };
+
+  const getTrendAdmin = async () => {
+    try {
+      const response = await axios.get(
+        `${TREND_ADMIN_GET}?from=${formatDateToYMD(
+          date?.from
+        )}&to=${formatDateToYMD(date?.to)}&granularity=month&memberId=`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Trend data:", response.data);
+      }
+    } catch (error: any) {
+      console.error("Error fetching trend data:", error);
+    }
+  };
+
   useEffect(() => {
     if (isHydrated && auth?.accessToken) {
-      getSummaryData();
+      if (auth?.user.role === "ADMIN") {
+        getSummaryAdmin();
+        getTrendAdmin();
+      }
     }
   }, [auth, isHydrated]);
 
@@ -204,48 +250,46 @@ export default function Page() {
             </div>
             <RangeDatePicker date={date} setDate={setDate} />
           </div>
-          <div className="md:p-5 lg:p-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {auth?.user.role === "ADMIN" && (
-              <>
-                <CardDashboard
-                  title="Jumlah Member"
-                  value={summaryAdmin.membersCount}
-                  isCurrency={false}
-                  icon={MdOutlineDashboardCustomize}
-                />
-                <CardDashboard
-                  title="Member Freq Top Up"
-                  value={summaryAdmin.memberTopupCount}
-                  isCurrency={false}
-                  icon={MdOutlineDashboardCustomize}
-                />
-                <CardDashboard
-                  title="AVG Freq Top Up"
-                  value={summaryAdmin.avgTopupFreq}
-                  isCurrency={false}
-                  icon={MdOutlineDashboardCustomize}
-                />
-                <CardDashboard
-                  title="Total Nominal Top Up"
-                  value={summaryAdmin.totalNominalTopup}
-                  isCurrency={true}
-                  icon={MdOutlineDashboardCustomize}
-                />
-                <CardDashboard
-                  title="Total Fee Top Up"
-                  value={summaryAdmin.totalFeeTopup}
-                  isCurrency={true}
-                  icon={MdOutlineDashboardCustomize}
-                />
-                <CardDashboard
-                  title="AVG Nominal Top Up"
-                  value={summaryAdmin.avgNominalTopup}
-                  isCurrency={true}
-                  icon={MdOutlineDashboardCustomize}
-                />
-              </>
-            )}
-          </div>
+          {auth?.user.role === "ADMIN" && (
+            <div className="md:p-5 lg:p-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              <CardDashboard
+                title="Jumlah Member"
+                value={summaryAdmin.membersCount}
+                isCurrency={false}
+                icon={MdOutlineDashboardCustomize}
+              />
+              <CardDashboard
+                title="Member Freq Top Up"
+                value={summaryAdmin.memberTopupCount}
+                isCurrency={false}
+                icon={MdOutlineDashboardCustomize}
+              />
+              <CardDashboard
+                title="AVG Freq Top Up"
+                value={summaryAdmin.avgTopupFreq}
+                isCurrency={false}
+                icon={MdOutlineDashboardCustomize}
+              />
+              <CardDashboard
+                title="Total Nominal Top Up"
+                value={summaryAdmin.totalNominalTopup}
+                isCurrency={true}
+                icon={MdOutlineDashboardCustomize}
+              />
+              <CardDashboard
+                title="Total Fee Top Up"
+                value={summaryAdmin.totalFeeTopup}
+                isCurrency={true}
+                icon={MdOutlineDashboardCustomize}
+              />
+              <CardDashboard
+                title="AVG Nominal Top Up"
+                value={summaryAdmin.avgNominalTopup}
+                isCurrency={true}
+                icon={MdOutlineDashboardCustomize}
+              />
+            </div>
+          )}
           <div className="md:p-5 lg:p-10 flex flex-col gap-5">
             <div className="flex flex-col gap-5 2xl:flex-row">
               <div className="col-span-3 w-full 2xl:w-8/12 h-96 rounded-2xl bg-[#F7F7F7] shadow-none outline-none p-5 border">
