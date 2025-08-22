@@ -42,3 +42,30 @@ export interface AuthResponse {
   refreshToken: string;
 }
 
+// Kunci status yang valid
+type StatusKey = "PENDING" | "PAID" | "EXPIRED" | "CANCELED";
+
+// Detail per status
+interface StatusDetail {
+  count: number;
+  percent: number;
+}
+
+// Rentang tanggal (ISO string)
+interface DateRange {
+  from: string; // e.g. "2025-08-15T00:00:00.000Z"
+  to: string;   // e.g. "2025-08-22T23:59:59.999Z"
+}
+
+// Payload utama sesuai struktur Anda
+export interface SummaryAdmin {
+  dateRange: DateRange;
+  membersCount: number;
+  memberTopupCount: number;
+  avgTopupFreq: number;
+  totalNominalTopup: number;
+  totalFeeTopup: number;
+  avgNominalTopup: number;
+  totalTopups: number;
+  statusBreakdown: Record<StatusKey, StatusDetail>;
+}

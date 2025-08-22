@@ -15,8 +15,12 @@ export default function Page() {
     <ContainerPage title="Request Akun" isHeader={false}>
       <HeaderPage title="Request Akun" />
       {auth?.user.role === "ADMIN" && <ListReq />}
-      <FormReq />
-      <ThankYou />
+      {auth?.user.role === "USER" && (
+        <>
+          <FormReq />
+          <ThankYou />
+        </>
+      )}
     </ContainerPage>
   );
 }

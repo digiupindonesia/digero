@@ -15,8 +15,12 @@ export default function Page() {
     <ContainerPage title="Order Topup" isHeader={false}>
       <HeaderPage title="Order Topup" isButton={false} />
       {auth?.user.role === "ADMIN" && <ListReq />}
-      <FormOrder />
-      <ThankYou />
+      {auth?.user.role === "USER" && (
+        <>
+          <FormOrder />
+          <ThankYou />
+        </>
+      )}
     </ContainerPage>
   );
 }

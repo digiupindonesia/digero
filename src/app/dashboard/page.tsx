@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ContainerPage from "@/components/ContainerPage";
 import HeaderPage from "@/components/HeaderPage";
 import ContainerComponent from "@/components/ContainerComponent";
@@ -34,6 +34,10 @@ import { Crown } from "lucide-react";
 import feeCalculator from "@/utils/feeCalculator";
 import formatCurrency from "@/utils/formatCurrency";
 import { useAuthStore } from "@/stores/useAuthStore";
+import axios from "axios";
+import { DateRange } from "react-day-picker";
+import formatDateToYMD from "@/utils/formatDateToYMD";
+import { SummaryAdmin } from "@/types/type";
 
 const dummyData = [
   {
@@ -126,8 +130,67 @@ const dummyStatusData = [
   },
 ];
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const SUMMARY_ADMIN_GET = `${API_URL}/api/v1/admin/analytics/summary`;
+
 export default function Page() {
-  const { auth } = useAuthStore();
+  const { auth, isHydrated } = useAuthStore();
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: (() => {
+      const today = new Date();
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(today.getDate() - 7);
+      return sevenDaysAgo;
+    })(),
+    to: new Date(),
+  });
+
+  const [summaryAdmin, setSummaryAdmin] = useState<SummaryAdmin>({
+    dateRange: {
+      from: "",
+      to: "",
+    },
+    membersCount: 0,
+    memberTopupCount: 0,
+    avgTopupFreq: 0,
+    totalNominalTopup: 0,
+    totalFeeTopup: 0,
+    avgNominalTopup: 0,
+    totalTopups: 0,
+    statusBreakdown: {
+      PENDING: { count: 0, percent: 0 },
+      PAID: { count: 0, percent: 0 },
+      EXPIRED: { count: 0, percent: 0 },
+      CANCELED: { count: 0, percent: 0 },
+    },
+  });
+
+  const getSummaryData = async () => {
+    try {
+      const response = await axios.get(
+        `${SUMMARY_ADMIN_GET}?from=${formatDateToYMD(
+          date?.from
+        )}&to=${formatDateToYMD(date?.to)}&memberId=`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setSummaryAdmin(response.data.data);
+      }
+    } catch (error: any) {
+      console.error("Error fetching summary data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isHydrated && auth?.accessToken) {
+      getSummaryData();
+    }
+  }, [auth, isHydrated]);
 
   return (
     <ContainerPage title="Dashboard" isHeader={false}>
@@ -139,49 +202,49 @@ export default function Page() {
               <FaRegCircleUser className="text-xl shrink-0" />
               <p className="text-sm md:text-base font-normal">All Member</p>
             </div>
-            <RangeDatePicker />
+            <RangeDatePicker date={date} setDate={setDate} />
           </div>
           <div className="md:p-5 lg:p-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {auth?.user.role === "ADMIN" && (
               <>
                 <CardDashboard
                   title="Jumlah Member"
-                  value={98}
+                  value={summaryAdmin.membersCount}
                   isCurrency={false}
                   icon={MdOutlineDashboardCustomize}
                 />
                 <CardDashboard
-                  title="Jumlah Freq Top Up"
-                  value={98}
+                  title="Member Freq Top Up"
+                  value={summaryAdmin.memberTopupCount}
                   isCurrency={false}
                   icon={MdOutlineDashboardCustomize}
                 />
                 <CardDashboard
                   title="AVG Freq Top Up"
-                  value={98}
+                  value={summaryAdmin.avgTopupFreq}
                   isCurrency={false}
+                  icon={MdOutlineDashboardCustomize}
+                />
+                <CardDashboard
+                  title="Total Nominal Top Up"
+                  value={summaryAdmin.totalNominalTopup}
+                  isCurrency={true}
+                  icon={MdOutlineDashboardCustomize}
+                />
+                <CardDashboard
+                  title="Total Fee Top Up"
+                  value={summaryAdmin.totalFeeTopup}
+                  isCurrency={true}
+                  icon={MdOutlineDashboardCustomize}
+                />
+                <CardDashboard
+                  title="AVG Nominal Top Up"
+                  value={summaryAdmin.avgNominalTopup}
+                  isCurrency={true}
                   icon={MdOutlineDashboardCustomize}
                 />
               </>
             )}
-            <CardDashboard
-              title="Total Nominal Top Up"
-              value={20000000}
-              isCurrency={true}
-              icon={MdOutlineDashboardCustomize}
-            />
-            <CardDashboard
-              title="Freq Top Up"
-              value={98}
-              isCurrency={false}
-              icon={MdOutlineDashboardCustomize}
-            />
-            <CardDashboard
-              title="AVG Nominal Topup"
-              value={20000000}
-              isCurrency
-              icon={MdOutlineDashboardCustomize}
-            />
           </div>
           <div className="md:p-5 lg:p-10 flex flex-col gap-5">
             <div className="flex flex-col gap-5 2xl:flex-row">

@@ -11,12 +11,17 @@ import {
 } from "@/components/ui/popover";
 import type { DateRange } from "react-day-picker";
 
-export default function RangeDatePicker() {
+type RangeDatePickerProps = {
+  date: DateRange | undefined;
+  setDate: (date: DateRange | undefined) => void;
+};
+
+export default function RangeDatePicker({ date, setDate }: RangeDatePickerProps) {
   // ⬇️ penting: pakai DateRange | undefined
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: undefined,
-    to: undefined,
-  });
+  // const [date, setDate] = React.useState<DateRange | undefined>({
+  //   from: undefined,
+  //   to: undefined,
+  // });
 
   const label = date?.from
     ? date?.to
