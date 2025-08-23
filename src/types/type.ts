@@ -7,26 +7,26 @@ export interface Member {
   feePercent: number;
   isActive: boolean;
   isVerified: boolean;
-  lastLoginAt: string;   // bisa juga Date jika Anda parse ke objek Date
-  createdAt: string;     // sama, bisa Date tergantung kebutuhan
+  lastLoginAt: string; // bisa juga Date jika Anda parse ke objek Date
+  createdAt: string; // sama, bisa Date tergantung kebutuhan
 }
 
-export type ListReqTopUp = {
-  id: string;
-  datetime: string;
-  name: string;
-  accountName: string;
-  price: number;
-  fee: number;
-  status: "pending" | "processing" | "complete";
-};
+// export type ListReqTopUp = {
+//   id: string;
+//   datetime: string;
+//   name: string;
+//   accountName: string;
+//   price: number;
+//   fee: number;
+//   status: "pending" | "processing" | "complete";
+// };
 
 // real
 export interface AuthResponse {
   user: {
     id: string;
     email: string;
-    feePercent:number;
+    feePercent: number;
     username: string;
     firstName: string | null;
     lastName: string | null;
@@ -50,7 +50,7 @@ interface StatusDetail {
 // Rentang tanggal (ISO string)
 interface DateRange {
   from: string; // e.g. "2025-08-15T00:00:00.000Z"
-  to: string;   // e.g. "2025-08-22T23:59:59.999Z"
+  to: string; // e.g. "2025-08-22T23:59:59.999Z"
 }
 
 // Payload utama sesuai struktur Anda
@@ -91,7 +91,7 @@ export interface ListReqAccount {
   requestedBy: RequestedBy;
 }
 
-type PaymentMethod = "BCA" | "MANDIRI" ;
+type PaymentMethod = "BCA" | "MANDIRI";
 
 // Nested object
 export interface AccountRequest {
@@ -115,8 +115,14 @@ export interface TopUp {
   paymentMethod: PaymentMethod; // bisa dibuat enum: "BCA" | "MANDIRI" | "BNI" dsb.
   status: "PENDING" | "PAID" | "EXPIRED"; // disesuaikan dengan sistem Anda
   paidAt: string | null; // ISO date string atau null
-  expiredAt: string;     // ISO date string
-  createdAt: string;     // ISO date string
-  updatedAt: string;     // ISO date string
+  expiredAt: string; // ISO date string
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
   accountRequest: AccountRequest;
+  user: {
+    id: string;
+    username: string;
+    firstName: string | null;
+    lastName: string | null;
+  };
 }

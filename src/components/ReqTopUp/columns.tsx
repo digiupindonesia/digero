@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ListReqTopUp } from "@/types/type";
+import { TopUp } from "@/types/type";
 import { ColumnDef } from "@tanstack/react-table";
 import { FaLocationArrow } from "react-icons/fa";
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
@@ -17,7 +17,7 @@ import { LuArrowUpDown } from "react-icons/lu";
 import { Checkbox } from "@/components/ui/checkbox";
 import formatCurrency from "@/utils/formatCurrency";
 
-export const columns: ColumnDef<ListReqTopUp>[] = [
+export const columns: ColumnDef<TopUp>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -41,7 +41,7 @@ export const columns: ColumnDef<ListReqTopUp>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "datetime",
+    accessorKey: "createdAt",
     // header: "Member",
     header: ({ column }) => {
       return (
@@ -56,20 +56,20 @@ export const columns: ColumnDef<ListReqTopUp>[] = [
     },
   },
   {
-    accessorKey: "name",
+    accessorKey: "user.username",
     header: "Member",
   },
   {
-    accessorKey: "accountName",
+    accessorKey: "accountRequest.accountName",
     header: "Nama Akun",
   },
   {
-    accessorKey: "price",
+    accessorKey: "total",
     header: "Nominal + Fee",
     cell: ({ row }) => {
       return (
         <span>
-          {formatCurrency(row.getValue("price"))}
+          {formatCurrency(row.getValue("total"))}
         </span>
       )
     }

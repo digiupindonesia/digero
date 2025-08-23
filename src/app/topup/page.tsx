@@ -34,9 +34,13 @@ export default function Page() {
       businessCenterId: "",
       status: "PENDING",
     },
+    user: {
+      id: "",
+      username: "",
+      firstName: null,
+      lastName: null,
+    },
   });
-
-  console.log("Data TopUp:", dataSuccessTopUp);
 
   return (
     <ContainerPage title="Order Topup" isHeader={false}>

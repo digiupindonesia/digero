@@ -33,7 +33,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ListReqTopUp } from "@/types/type";
+import { TopUp } from "@/types/type";
 import {
   Menubar,
   MenubarContent,
@@ -49,15 +49,21 @@ import { FaCheckDouble } from "react-icons/fa6";
 import { MdOutlineFilterList } from "react-icons/md";
 
 interface DataTableProps {
-  columns: ColumnDef<ListReqTopUp>[];
-  data: ListReqTopUp[];
+  columns: ColumnDef<TopUp>[];
+  data: TopUp[];
+  rowSelection: Record<string, boolean>;
+  setRowSelection: (selection: Record<string, boolean>) => void;
 }
 
-export function DataTable({ columns, data }: DataTableProps) {
+export function DataTable({
+  columns,
+  data,
+  rowSelection,
+  setRowSelection,
+}: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   // Filter data berdasarkan status dengan useMemo untuk optimasi
@@ -71,9 +77,9 @@ export function DataTable({ columns, data }: DataTableProps) {
   const statusCounts = useMemo(() => {
     return {
       all: data.length,
-      pending: data.filter((item) => item.status === "pending").length,
-      processing: data.filter((item) => item.status === "processing").length,
-      complete: data.filter((item) => item.status === "complete").length,
+      PENDING: data.filter((item) => item.status === "PENDING").length,
+      PAID: data.filter((item) => item.status === "PAID").length,
+      // COMPLETE: data.filter((item) => item.status === "COMPLETE").length,
     };
   }, [data]);
 
@@ -91,7 +97,15 @@ export function DataTable({ columns, data }: DataTableProps) {
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: setRowSelection
+      ? (updaterOrValue) => {
+          if (typeof updaterOrValue === "function") {
+            setRowSelection(updaterOrValue(rowSelection ?? {}));
+          } else {
+            setRowSelection(updaterOrValue);
+          }
+        }
+      : undefined,
     getPaginationRowModel: getPaginationRowModel(),
     state: {
       sorting,
@@ -123,10 +137,10 @@ export function DataTable({ columns, data }: DataTableProps) {
               } flex items-center gap-1`}
             >
               <MdAccessTime className="text-lg" />
-              Pending ({statusCounts.pending})
+              Pending ({statusCounts.PENDING})
             </MenubarTrigger>
           </MenubarMenu>
-          <MenubarMenu>
+          {/* <MenubarMenu>
             <MenubarTrigger
               onClick={() => handleStatusFilter("processing")}
               className={`${
@@ -136,7 +150,7 @@ export function DataTable({ columns, data }: DataTableProps) {
               <FaCheck className="text-lg" />
               Processing ({statusCounts.processing})
             </MenubarTrigger>
-          </MenubarMenu>
+          </MenubarMenu> */}
           <MenubarMenu>
             <MenubarTrigger
               onClick={() => handleStatusFilter("complete")}
@@ -145,7 +159,7 @@ export function DataTable({ columns, data }: DataTableProps) {
               } flex items-center gap-1`}
             >
               <FaCheckDouble className="text-lg" />
-              Complete ({statusCounts.complete})
+              Paid ({statusCounts.PAID})
             </MenubarTrigger>
           </MenubarMenu>
         </Menubar>
@@ -176,11 +190,11 @@ export function DataTable({ columns, data }: DataTableProps) {
                 <MdAccessTime className="mr-2 text-lg" />
                 <span className="flex-1">Pending</span>
                 <span className="text-muted-foreground">
-                  ({statusCounts.pending})
+                  ({statusCounts.PENDING})
                 </span>
               </DropdownMenuItem>
 
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onClick={() => handleStatusFilter("processing")}
                 className={
                   statusFilter === "processing" ? "text-yellow-500" : ""
@@ -191,16 +205,16 @@ export function DataTable({ columns, data }: DataTableProps) {
                 <span className="text-muted-foreground">
                   ({statusCounts.processing})
                 </span>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
 
               <DropdownMenuItem
                 onClick={() => handleStatusFilter("complete")}
                 className={statusFilter === "complete" ? "text-yellow-500" : ""}
               >
                 <FaCheckDouble className="mr-2 text-lg" />
-                <span className="flex-1">Complete</span>
+                <span className="flex-1">Paid</span>
                 <span className="text-muted-foreground">
-                  ({statusCounts.complete})
+                  ({statusCounts.PAID})
                 </span>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -236,10 +250,15 @@ export function DataTable({ columns, data }: DataTableProps) {
           <InputComponent
             Icon={FaSearch}
             className="w-full py-0"
-            placeholder="Filter Nama..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            placeholder="Filter tanggal order..."
+            value={
+              (table.getColumn("createdAt")?.getFilterValue() as string) ??
+              ""
+            }
             onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
+              table
+                .getColumn("createdAt")
+                ?.setFilterValue(event.target.value)
             }
           />
         </div>
