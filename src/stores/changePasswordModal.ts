@@ -1,22 +1,28 @@
 // changePasswordModal.ts
-import { create } from "zustand"
+import { create } from "zustand";
 
 export type ChangePasswordModalState = {
-  openModal: boolean
+  openModal: boolean;
+  data?: string;
   // actions
-  open: () => void
-  close: () => void
-  toggle: () => void
-  setOpenModal: (value: boolean) => void
-  reset: () => void
-}
+  open: (data?: string) => void;
+  close: () => void;
+  toggle: () => void;
+  setOpenModal: (value: boolean) => void;
+  setData: (data: string) => void;
+  reset: () => void;
+};
 
-export const useChangePasswordModal = create<ChangePasswordModalState>((set) => ({
-  openModal: false,
+export const useChangePasswordModal = create<ChangePasswordModalState>(
+  (set) => ({
+    openModal: false,
+    data: undefined,
 
-  open: () => set({ openModal: true }),
-  close: () => set({ openModal: false }),
-  toggle: () => set((s) => ({ openModal: !s.openModal })),
-  setOpenModal: (value) => set({ openModal: value }),
-  reset: () => set({ openModal: false }),
-}))
+    open: (data?: string) => set({ openModal: true, data }),
+    close: () => set({ openModal: false, data: undefined }),
+    toggle: () => set((s) => ({ openModal: !s.openModal })),
+    setOpenModal: (value) => set({ openModal: value }),
+    setData: (data) => set({ data }),
+    reset: () => set({ openModal: false, data: undefined }),
+  })
+);

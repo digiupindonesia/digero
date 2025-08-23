@@ -26,7 +26,7 @@ function ActionCell({ row }: { row: Row<Member> }) {
   const openModalSafely = () => {
     // pastikan dropdown close dulu, baru open dialog
     requestAnimationFrame(() => {
-      useChangePasswordModal.getState().open();
+      useChangePasswordModal.getState().open(row.id);
     });
   };
 

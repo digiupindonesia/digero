@@ -36,19 +36,22 @@ import {
 import { Member } from "@/types/type";
 import { useChangePasswordModal } from "@/stores/changePasswordModal";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps {
+  columns: ColumnDef<Member, any>[];
+  data: Member[];
+  rowSelection?: Record<string, boolean>;
+  setRowSelection?: (selection: Record<string, boolean>) => void;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+  rowSelection,
+  setRowSelection,
+}: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
   const { toggle, open } = useChangePasswordModal();
 
   const table = useReactTable({
@@ -60,8 +63,17 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: setRowSelection
+      ? (updaterOrValue) => {
+          if (typeof updaterOrValue === "function") {
+            setRowSelection(updaterOrValue(rowSelection ?? {}));
+          } else {
+            setRowSelection(updaterOrValue);
+          }
+        }
+      : undefined,
     getPaginationRowModel: getPaginationRowModel(),
+    getRowId: (row) => row.id,
     state: {
       sorting,
       columnFilters,
@@ -70,12 +82,12 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const openModalSafely = () => {
-    // pastikan dropdown close dulu, baru open dialog
-    requestAnimationFrame(() => {
-      useChangePasswordModal.getState().open();
-    });
-  };
+  // const openModalSafely = () => {
+  //   // pastikan dropdown close dulu, baru open dialog
+  //   requestAnimationFrame(() => {
+  //     useChangePasswordModal.getState().open(row.id);
+  //   });
+  // };
 
   return (
     <>
@@ -127,9 +139,9 @@ export function DataTable<TData, TValue>({
             <DropdownMenuItem className="text-red-500">
               Suspend
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={openModalSafely}>
+            {/* <DropdownMenuItem onSelect={openModalSafely}>
               Ganti Password
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem>Ubah Fee</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
