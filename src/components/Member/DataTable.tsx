@@ -187,7 +187,7 @@ export function DataTable({
                     aria-disabled={isSuspended}
                     className={`${
                       isSuspended
-                        ? "bg-gray-200 hover:bg-gray-200"
+                        ? "bg-red-100 text-red-500 hover:bg-red-100"
                         : "hover:bg-gray-100"
                     }  cursor-pointer`}
                   >

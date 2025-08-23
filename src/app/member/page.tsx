@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ContainerComponent from "@/components/ContainerComponent";
 import ContainerPage from "@/components/ContainerPage";
 import { columns } from "../../components/Member/columns";
@@ -26,6 +26,9 @@ import { ToastContainer } from "react-toastify";
 import Input from "@/components/Input";
 import { Button } from "@/components/ui/button";
 import { produce } from "immer";
+import strengthText from "@/utils/strengthText";
+import strengthColor from "@/utils/strengthColor";
+import calcStrength from "@/utils/calcStrength";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_MEMBERS = `${API_URL}/api/v1/members?role=USER`;
@@ -60,6 +63,11 @@ export default function Page() {
     idMember: data || "",
     newFee: 0,
   });
+
+  const strength = useMemo(
+    () => calcStrength(newPassword.newPassword),
+    [newPassword.newPassword]
+  );
 
   const getMemberEmailByID = (id: string | undefined) => {
     const member = members.find((member) => member.id === id);
@@ -142,6 +150,40 @@ export default function Page() {
     }
   };
 
+  const suspendMember = async () => {
+    const idsArray = Object.keys(rowSelection).filter(
+      (key) => rowSelection[key]
+    );
+
+    // Prioritaskan data dari useOpenModal, jika tidak ada gunakan idsArray
+    const ids = data ? [data] : idsArray;
+
+    try {
+      const response = await axios.patch(
+        `${SUSPEND_MEMBER_PATCH}`,
+        {
+          ids: ids,
+          suspend: true,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        reset();
+        setRowSelection({});
+        getMember();
+        notify.success("Member suspended successfully");
+      }
+    } catch (error: any) {
+      notify.error("Error suspending member");
+      console.error("Error suspending member:", error);
+    }
+  };
+
   useEffect(() => {
     if (isHydrated) {
       getMember();
@@ -188,8 +230,27 @@ export default function Page() {
                 )
               }
             />
+            <div className="space-y-2 w-full">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-black font-light">
+                  Password Strength
+                </span>
+                <span className="text-sm text-zinc-400">
+                  {strengthText(strength)}
+                </span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-zinc-200 overflow-hidden">
+                <div
+                  className={`h-full ${strengthColor(
+                    strength
+                  )} transition-all duration-300`}
+                  style={{ width: `${strength}%` }}
+                />
+              </div>
+            </div>
 
             <Button
+              disabled={strength < 80}
               onClick={() => changePassword()}
               className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded"
             >
@@ -208,7 +269,7 @@ export default function Page() {
             <DialogTitle>Ubah Fee {getMemberEmailByID(data)}?</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          {Object.keys(rowSelection).length > 0 || data !== "" ? (
+          {Object.keys(rowSelection).length > 0 || data !== undefined ? (
             <div className="w-full flex flex-col gap-2 items-end">
               <Input
                 type="text"
@@ -258,7 +319,7 @@ export default function Page() {
             <DialogTitle>Suspend {getMemberEmailByID(data)}?</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          {Object.keys(rowSelection).length > 0 || data !== "" ? (
+          {Object.keys(rowSelection).length > 0 || data !== undefined ? (
             <>
               {Object.keys(rowSelection)
                 .filter((key) => rowSelection[key])
@@ -267,7 +328,7 @@ export default function Page() {
                   return member ? <p key={id}>{member.email}</p> : null;
                 })}
               <Button
-                // onClick={() => changeFee()}
+                onClick={() => suspendMember()}
                 className="flex items-center gap-2 bg-red-500 w-fit text-white p-2 rounded"
               >
                 Suspend
