@@ -11,6 +11,7 @@ import { MdOutlineLogout } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useRandomNumberStore } from "@/stores/randomNumber";
+import { useReqAccStore } from "@/stores/reqAcc";
 
 const links = [
   {
@@ -50,6 +51,7 @@ export const Navbar = () => {
   const { auth } = useAuthStore();
   const { clearAuth } = useAuthStore();
   const {clearNumber} = useRandomNumberStore()
+  const {clearForm} = useReqAccStore()
   // Buat array dari semua path yang valid (termasuk logout)
   const validPaths = [...links.map((link) => link.path), "/logout"];
 
@@ -87,6 +89,7 @@ export const Navbar = () => {
             onClick={() => {
               clearAuth();
               clearNumber();
+              clearForm();
             }}
             Icon={MdOutlineLogout}
             text="Logout"

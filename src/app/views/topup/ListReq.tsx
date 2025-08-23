@@ -7,6 +7,7 @@ import { TopUp } from "@/types/type";
 import { notify } from "@/utils/notify";
 import axios from "axios";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { ToastContainer } from "react-toastify";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_LIST_REQ_TOPUP = `${API_URL}/api/v1/payment`;
@@ -88,18 +89,21 @@ export default function ListReq() {
   }, [auth, isHydrated]);
 
   return (
-    <ContainerComponent title="List Request">
-      <div className="md:bg-white md:rounded-lg md:p-10">
-        <DataTable
-          columns={columns}
-          data={listReqTopUp}
-          rowSelection={rowSelection}
-          setRowSelection={setRowSelection}
-          moveToPaid={handleMoveToPaid}
-          //     getListReqAcc={getListReqAcc}
-          //     isLoading={isLoading}
-        />
-      </div>
-    </ContainerComponent>
+    <>
+      <ToastContainer />
+      <ContainerComponent title="List Request">
+        <div className="md:bg-white md:rounded-lg md:p-10">
+          <DataTable
+            columns={columns}
+            data={listReqTopUp}
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
+            moveToPaid={handleMoveToPaid}
+            //     getListReqAcc={getListReqAcc}
+            //     isLoading={isLoading}
+          />
+        </div>
+      </ContainerComponent>
+    </>
   );
 }

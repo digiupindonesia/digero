@@ -65,6 +65,7 @@ export const createColumns = (actions: ColumnActions): ColumnDef<TopUp>[] => {
     },
     {
       accessorKey: "user.username",
+      id: "user.username", // Tambahkan id yang eksplisit
       header: "Member",
     },
     {

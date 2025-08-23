@@ -255,10 +255,10 @@ export function DataTable({
             className="w-full py-0"
             placeholder="Filter tanggal order..."
             value={
-              (table.getColumn("createdAt")?.getFilterValue() as string) ?? ""
+              (table.getColumn("user.username")?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
-              table.getColumn("createdAt")?.setFilterValue(event.target.value)
+              table.getColumn("user.username")?.setFilterValue(event.target.value)
             }
           />
         </div>
