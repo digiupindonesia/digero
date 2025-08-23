@@ -5,13 +5,17 @@ import { columns } from "@/components/ReqAccount/columns";
 import { ListReqAccount } from "@/types/type";
 import { useAuthStore } from "@/stores/useAuthStore";
 import axios from "axios";
+import { ToastContainer } from "react-toastify";
+import { notify } from "@/utils/notify";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_LIST_REQ_ACC = `${API_URL}/api/v1/account-requests`;
+const PUT_UPDATE_STATUS_REQ_ACC = `${API_URL}/api/v1/account-requests/`;
 
 export default function ListReq() {
   const { auth, isHydrated } = useAuthStore();
   const [listReqAccount, setListReqAccount] = useState<ListReqAccount[]>([]);
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
   const getListReqAcc = async () => {
     try {
@@ -29,20 +33,60 @@ export default function ListReq() {
     }
   };
 
+  const moveToApproved = async () => {
+    const ids = Object.keys(rowSelection) // ambil key
+      .filter((key) => rowSelection[key]) // hanya ambil yang true
+      .join(","); // gabungkan jadi string
+
+    const idsArray = Object.keys(rowSelection).filter(
+      (key) => rowSelection[key]
+    );
+
+    try {
+      const response = await axios.put(
+        `${PUT_UPDATE_STATUS_REQ_ACC}:id/status`,
+        {
+          ids: idsArray,
+          status: "APPROVED",
+          rejectionReason: null,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        notify.success("Status updated successfully");
+      }
+    } catch (error: any) {
+      console.error("Error updating status of account request:", error);
+    }
+  };
+
   useEffect(() => {
     if (isHydrated && auth?.accessToken) {
       getListReqAcc();
     }
   }, [auth, isHydrated]);
 
+  console.log("row selection:", rowSelection);
+
   return (
-    <ContainerComponent title="List Request">
-      <div className="md:bg-white md:rounded-lg md:p-10">
-        <DataTable
-          columns={columns}
-          data={listReqAccount as ListReqAccount[]}
-        />
-      </div>
-    </ContainerComponent>
+    <>
+      <ToastContainer />
+      <ContainerComponent title="List Request">
+        <div className="md:bg-white md:rounded-lg md:p-10">
+          <DataTable
+            columns={columns}
+            data={listReqAccount as ListReqAccount[]}
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
+            moveToApproved={moveToApproved}
+          />
+        </div>
+      </ContainerComponent>
+    </>
   );
 }

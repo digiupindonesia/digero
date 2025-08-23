@@ -34,6 +34,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_PROFILE_GET = `${API_URL}/api/v1/profile/me`;
 const UPDATE_PROFILE_PUT = `${API_URL}/api/v1/profile/me`;
 const CHANGE_PASSWORD_PUT = `${API_URL}/api/v1/profile/me/password`;
+const CHANGE_FEE_PUT = `${API_URL}/api/v1/admin/settings/fee`;
+const GET_FEE_ADMIN = `${API_URL}/api/v1/admin/settings/fee`;
 
 type Profile = {
   id: string;
@@ -62,6 +64,8 @@ const Page = () => {
     oldPassword: "",
     newPassword: "",
   });
+  const [fee, setFee] = useState<number>(5); // Default fee
+
   const strength = useMemo(
     () => calcStrength(password.newPassword),
     [password.newPassword]
@@ -171,9 +175,48 @@ const Page = () => {
     );
   };
 
+  const getAdminFee = async () => {
+    try {
+      const response = await axios.get(GET_FEE_ADMIN, {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setFee(response.data.data.feePercent);
+      }
+    } catch (error: any) {
+      console.error("Error fetching admin fee:", error);
+    }
+  };
+
+  const changeAdminFee = async () => {
+    try {
+      const response = await axios.put(
+        CHANGE_FEE_PUT,
+        {
+          feePercent: fee,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        notify.success("Fee updated successfully!");
+      }
+    } catch (error: any) {
+      console.error("Error fetching admin fee:", error);
+    }
+  };
+
   useEffect(() => {
     if (isHydrated && auth?.accessToken) {
       fetchProfile();
+      getAdminFee();
     }
   }, [auth, isHydrated]);
 
@@ -319,11 +362,33 @@ const Page = () => {
                     <CiPercent className="text-2xl" />
                     <p className="text-base font-normal">Fee Default</p>
                   </div>
-                  <Input
-                    placeholder="Tambah Rekening Bank"
-                    defaultValue={5}
-                    className="my-1"
-                  />
+                  <div className="w-full flex items-center gap-3">
+                    <div className="w-8/12">
+                      <Input
+                        type="text"
+                        inputMode="decimal"
+                        pattern="[0-9]*\.?[0-9]*"
+                        value={fee}
+                        className="my-1"
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (/^[0-9]*\.?[0-9]*$/.test(val) || val === "") {
+                            setFee(val === "" ? 0 : Number(val)); // simpan sebagai number
+                          }
+                        }}
+                        onBlur={() => {
+                          // convert ke number hanya saat blur
+                          setFee((prev) => (prev ? Number(prev) : 0));
+                        }}
+                      />
+                    </div>
+                    <Button
+                      onClick={() => changeAdminFee()}
+                      className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded"
+                    >
+                      Ubah Fee
+                    </Button>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col gap-5">

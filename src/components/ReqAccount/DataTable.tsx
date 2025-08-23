@@ -51,13 +51,16 @@ import { MdOutlineFilterList } from "react-icons/md";
 interface DataTableProps {
   columns: ColumnDef<ListReqAccount>[];
   data: ListReqAccount[];
+  rowSelection?: Record<string, boolean>;
+  setRowSelection?: (selection: Record<string, boolean>) => void;
+  moveToApproved: () => void;
 }
 
-export function DataTable({ columns, data }: DataTableProps) {
+export function DataTable({ columns, data, rowSelection, setRowSelection, moveToApproved }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
+  
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
   // Filter data berdasarkan status dengan useMemo untuk optimasi
@@ -93,8 +96,17 @@ export function DataTable({ columns, data }: DataTableProps) {
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: setRowSelection
+      ? (updaterOrValue) => {
+          if (typeof updaterOrValue === "function") {
+            setRowSelection(updaterOrValue(rowSelection ?? {}));
+          } else {
+            setRowSelection(updaterOrValue);
+          }
+        }
+      : undefined,
     getPaginationRowModel: getPaginationRowModel(),
+    getRowId: (row) => row.id,
     state: {
       sorting,
       columnFilters,
@@ -273,12 +285,12 @@ export function DataTable({ columns, data }: DataTableProps) {
               Move to Processing
             </DropdownMenuItem>
             <DropdownMenuItem
-              // onClick={() => setStatusFilter("added")}
+              onClick={() => moveToApproved()}
               className={`${
                 statusFilter === "added" ? "bg-gray-100" : ""
               } text-green-500`}
             >
-              Move to Added
+              Move to Approved
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -24,6 +24,17 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { notify } from "@/utils/notify";
 import { useRandomNumberStore } from "@/stores/randomNumber";
 import { getRandomNumber } from "@/utils/randomNumber";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { FaWhatsapp } from "react-icons/fa";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const URL_REGISTER_USER_POST = `${API_URL}/api/v1/auth/register`;
@@ -58,6 +69,7 @@ export default function Home() {
   });
   const { auth, setAuth, clearAuth, updateUser } = useAuthStore();
   const { setNumber } = useRandomNumberStore();
+  const [modalForgotPass, setModalForgotPass] = useState<boolean>(false);
 
   // visibilitas password
   const [showLoginPass, setShowLoginPass] = useState(false);
@@ -217,21 +229,25 @@ export default function Home() {
                   />
                 </Field>
 
-                {/* <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2 text-sm text-zinc-300">
+                <div className="flex items-center justify-end">
+                  {/* <label className="flex items-center gap-2 text-sm text-zinc-300">
                     <input
                       type="checkbox"
                       className="h-4 w-4 rounded border-zinc-700 bg-zinc-900 text-amber-500 focus:ring-amber-500"
                     />
                     Remember me
-                  </label>
+                  </label> */}
                   <a
                     className="text-sm text-amber-400 hover:text-amber-500"
                     href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setModalForgotPass(true);
+                    }}
                   >
                     Forgot password?
                   </a>
-                </div> */}
+                </div>
 
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading && (
@@ -412,24 +428,30 @@ export default function Home() {
             © {new Date().getFullYear()} DIGERO. All rights reserved.
           </p>
         </div>
-
-        {/* Toasts */}
-        {/* <div className="pointer-events-none fixed top-4 right-4 z-50 space-y-2">
-          {toasts.map((t, index) => (
-            <div
-              key={index}
-              className={[
-                "pointer-events-auto rounded-lg px-4 py-2 shadow-lg transition",
-                t.type === "success" && "bg-green-500",
-                t.type === "error" && "bg-red-500",
-                t.type === "info" && "bg-blue-500",
-              ].join(" ")}
-            >
-              {t.text}
-            </div>
-          ))}
-        </div> */}
       </div>
+      <Dialog open={modalForgotPass} onOpenChange={setModalForgotPass}>
+        <DialogContent className="bg-gradient-to-br from-zinc-950 to-zinc-900 ring-1 ring-amber-500/20 border-none">
+          <DialogHeader>
+            <DialogTitle className="text-amber-500">Lupa Password?</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          <div className="w-full flex flex-col gap-3">
+            <p className="text-white">
+              Hubungi CS dengan mengirimkan email anda untuk mengatur ulang
+              password.
+            </p>
+            <div className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 rounded py-2 transition-all cursor-pointer">
+              <FaWhatsapp className="h-6 w-6 text-white" />
+              <p className="text-white font-medium text-base">Hubungi CS</p>
+            </div>
+          </div>
+          <DialogFooter className="sm:justify-start">
+            <DialogClose asChild>
+              <Button type="button">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

@@ -157,7 +157,7 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
-                const isSuspended = (row.original as Member).isActive;
+                const isSuspended = (row.original as Member).isActive === false;
 
                 return (
                   <TableRow
