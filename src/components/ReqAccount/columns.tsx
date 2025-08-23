@@ -76,30 +76,30 @@ export const createColumns = (
     accessorKey: "status",
     header: "Status",
   },
-  {
-    header: "Action",
-    cell: ({ row }) => {
-      const rowData = row.original;
+  // {
+  //   header: "Action",
+  //   cell: ({ row }) => {
+  //     const rowData = row.original;
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <div className="flex items-center p-2 rounded bg-black cursor-pointer mx-auto">
-              <FaLocationArrow className="cursor-pointer text-white" />
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              className="text-green-500"
-              onClick={() => actions.onApprove?.()}
-            >
-              Move to Approved
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger>
+  //           <div className="flex items-center p-2 rounded bg-black cursor-pointer mx-auto">
+  //             <FaLocationArrow className="cursor-pointer text-white" />
+  //           </div>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent>
+  //           <DropdownMenuItem
+  //             className="text-green-500"
+  //             onClick={() => actions.onApprove?.()}
+  //           >
+  //             Move to Approved
+  //           </DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];
 
 // Export untuk backward compatibility jika ada yang masih menggunakan

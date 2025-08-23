@@ -11,16 +11,6 @@ export interface Member {
   createdAt: string;     // sama, bisa Date tergantung kebutuhan
 }
 
-
-// export type ListReqAccount = {
-//   id: string;
-//   datetime: string;
-//   name: string;
-//   accountName: string;
-//   idbc: string;
-//   status: "pending" | "processing" | "added";
-// };
-
 export type ListReqTopUp = {
   id: string;
   datetime: string;
@@ -101,3 +91,32 @@ export interface ListReqAccount {
   requestedBy: RequestedBy;
 }
 
+type PaymentMethod = "BCA" | "MANDIRI" ;
+
+// Nested object
+export interface AccountRequest {
+  id: string;
+  accountName: string;
+  businessCenterId: string;
+  status: "APPROVED" | "PENDING" | "REJECTED"; // bisa disesuaikan
+}
+
+// Main object
+export interface TopUp {
+  id: string;
+  userId: string;
+  accountRequestId: string;
+  amount: number;
+  feePercent: number;
+  feeAmount: number;
+  uniqueCode: number;
+  subtotal: number;
+  total: number;
+  paymentMethod: PaymentMethod; // bisa dibuat enum: "BCA" | "MANDIRI" | "BNI" dsb.
+  status: "PENDING" | "PAID" | "EXPIRED"; // disesuaikan dengan sistem Anda
+  paidAt: string | null; // ISO date string atau null
+  expiredAt: string;     // ISO date string
+  createdAt: string;     // ISO date string
+  updatedAt: string;     // ISO date string
+  accountRequest: AccountRequest;
+}

@@ -2,8 +2,32 @@ import ContainerComponent from "@/components/ContainerComponent";
 import Image from "next/image";
 import React from "react";
 import IconMandiri from "@/assets/img/mandiri.png";
+import IconBCA from "@/assets/img/bca.png";
+import { TopUp } from "@/types/type";
+import { useAuthStore } from "@/stores/useAuthStore";
+import formatCurrency from "@/utils/formatCurrency";
 
-export default function ThankYou() {
+const dataPaymentMethod = {
+  BCA: {
+    icon: IconBCA,
+    name: "Bank Central Asia",
+    username: "Agung Prasetyo",
+    number: "1234567890",
+  },
+  MANDIRI: {
+    icon: IconMandiri,
+    name: "Bank Mandiri",
+    username: "Agung Prasetyo",
+    number: "0987654321",
+  },
+};
+
+type ThankYouProps = {
+  data: TopUp;
+};
+
+export default function ThankYou({ data }: ThankYouProps) {
+  const { auth } = useAuthStore();
   return (
     <ContainerComponent title="Thank You">
       <div className="md:bg-white md:rounded-lg py-10 md:py-20">
@@ -14,17 +38,21 @@ export default function ThankYou() {
           <div className="mt-10 space-y-12">
             {/* Pembuka */}
             <p className="text-lg leading-relaxed">
-              Terimakasih (username) sudah melakukan order topup dengan detail
+              Terimakasih {auth?.user.username} sudah melakukan order topup
+              dengan detail
             </p>
 
             {/* Detail nominal & akun */}
             <div className="space-y-1 text-lg">
               <p>
                 Nominal Total + Fee:{" "}
-                <span className="font-medium">(nominal)</span>
+                <span className="font-bold">{formatCurrency(data.total)}</span>
               </p>
               <p>
-                Akun: <span className="font-medium">(akun)</span>
+                Akun:{" "}
+                <span className="font-medium">
+                  {data.accountRequest.accountName}
+                </span>
               </p>
             </div>
 
@@ -35,21 +63,29 @@ export default function ThankYou() {
 
             {/* Logo + nomor rekening */}
             <div className="space-y-3">
-              <Image alt="Bank Logo" src={IconMandiri} className="mx-auto" />
-              <p className="text-xl font-semibold tracking-wide">
-                62332242342{" "}
-                <span className="font-normal">— Agung Prasetyo</span>
+              <div className="flex flex-col items-center gap-3">
+                <Image
+                  alt="Bank Logo"
+                  src={dataPaymentMethod[data.paymentMethod].icon}
+                  className="mx-auto"
+                />
+                <p className="text-xl font-semibold tracking-wide">
+                  {dataPaymentMethod[data.paymentMethod].number}{" "}
+                  <span className="font-normal">
+                    — {dataPaymentMethod[data.paymentMethod].username}
+                  </span>
+                </p>
+              </div>
+
+              {/* Catatan akhir */}
+              <p className="text-lg leading-relaxed">
+                Bila sudah melakukan pembayaran silahkan tunggu atau untuk
+                proses lebih cepat bisa hub cs kami dengan klik{" "}
+                <a href="/kontak" className="text-yellow-500 underline">
+                  disini
+                </a>
               </p>
             </div>
-
-            {/* Catatan akhir */}
-            <p className="text-lg leading-relaxed">
-              Bila sudah melakukan pembayaran silahkan tunggu atau untuk proses
-              lebih cepat bisa hub cs kami dengan klik{" "}
-              <a href="/kontak" className="text-yellow-500 underline">
-                disini
-              </a>
-            </p>
           </div>
         </div>
       </div>
