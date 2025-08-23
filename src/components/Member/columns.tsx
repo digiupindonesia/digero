@@ -18,6 +18,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 // ✅ import store zustand
 import { useOpenModal } from "@/stores/openModal"; // sesuaikan path
+import { Badge } from "../ui/badge";
 
 // ✅ Komponen sel terpisah agar aman pakai hook
 function ActionCell({ row }: { row: Row<Member> }) {
@@ -35,7 +36,7 @@ function ActionCell({ row }: { row: Row<Member> }) {
     });
   };
 
-  const openModalSuspen = () => {
+  const openModalSuspend = () => {
     // pastikan dropdown close dulu, baru open dialog
     requestAnimationFrame(() => {
       useOpenModal.getState().open("suspendModal", row.id);
@@ -50,14 +51,27 @@ function ActionCell({ row }: { row: Row<Member> }) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem className="text-red-500" onClick={openModalSuspen}>Suspend</DropdownMenuItem>
+        {row.original.isActive ? (
+          <DropdownMenuItem className="text-red-500" onClick={openModalSuspend}>
+            Suspend
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem
+            className="text-green-500"
+            onClick={openModalSuspend}
+          >
+            Activate
+          </DropdownMenuItem>
+        )}
 
         {/* 🔗 klik ini akan buka modal via Zustand */}
         <DropdownMenuItem onClick={openModalChangePassword}>
           Ganti Password
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={openModalChangeFee}>Ubah Fee</DropdownMenuItem>
+        <DropdownMenuItem onClick={openModalChangeFee}>
+          Ubah Fee
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -88,6 +102,16 @@ export const columns: ColumnDef<Member>[] = [
   },
   {
     accessorKey: "memberName",
+    cell: ({ row }) => {
+      return row.original.isActive ? (
+        <p>{row.original.memberName}</p>
+      ) : (
+        <div className="flex items-center gap-2">
+          <p>{row.original.memberName}</p>
+          <Badge variant="destructive">Suspended</Badge>
+        </div>
+      );
+    },
     header: ({ column }) => {
       return (
         <Button

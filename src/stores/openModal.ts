@@ -1,12 +1,13 @@
 // openModal.ts
 import { create } from "zustand";
 
-export type ModalType = "feeModal" | "changePasswordModal" | "suspendModal";
+export type ModalType = "feeModal" | "changePasswordModal" | "suspendModal" | "activateModal";
 
 export type OpenModalState = {
   feeModal: boolean;
   changePasswordModal: boolean;
   suspendModal: boolean;
+  activateModal: boolean;
   data?: string;
   // actions
   open: (modalType: ModalType, data?: string) => void;
@@ -22,6 +23,7 @@ export const useOpenModal = create<OpenModalState>((set) => ({
   feeModal: false,
   changePasswordModal: false,
   suspendModal: false,
+  activateModal: false,
   data: undefined,
 
   open: (modalType: ModalType, data?: string) =>
@@ -42,5 +44,5 @@ export const useOpenModal = create<OpenModalState>((set) => ({
   setData: (data) => set({ data }),
 
   reset: () =>
-    set({ feeModal: false, changePasswordModal: false, suspendModal: false, data: undefined }),
+    set({ feeModal: false, changePasswordModal: false, suspendModal: false, activateModal: false, data: undefined }),
 }));

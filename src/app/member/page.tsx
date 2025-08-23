@@ -41,6 +41,7 @@ export default function Page() {
     changePasswordModal,
     feeModal,
     suspendModal,
+    activateModal,
     setOpenModal,
     data,
     reset,
@@ -72,6 +73,11 @@ export default function Page() {
   const getMemberEmailByID = (id: string | undefined) => {
     const member = members.find((member) => member.id === id);
     return member ? member.email : "";
+  };
+
+  const getStatusByID = (id: string | undefined) => {
+    const member = members.find((member) => member.id === id);
+    return member ? member.isActive : "";
   };
 
   const getMember = async () => {
@@ -181,6 +187,40 @@ export default function Page() {
     } catch (error: any) {
       notify.error("Error suspending member");
       console.error("Error suspending member:", error);
+    }
+  };
+
+  const activateMember = async () => {
+    const idsArray = Object.keys(rowSelection).filter(
+      (key) => rowSelection[key]
+    );
+
+    // Prioritaskan data dari useOpenModal, jika tidak ada gunakan idsArray
+    const ids = data ? [data] : idsArray;
+
+    try {
+      const response = await axios.patch(
+        `${SUSPEND_MEMBER_PATCH}`,
+        {
+          ids: ids,
+          suspend: false,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        reset();
+        setRowSelection({});
+        getMember();
+        notify.success("Member activated successfully");
+      }
+    } catch (error: any) {
+      notify.error("Error activating member");
+      console.error("Error activating member:", error);
     }
   };
 
@@ -316,7 +356,50 @@ export default function Page() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Suspend {getMemberEmailByID(data)}?</DialogTitle>
+            <DialogTitle>
+              {getStatusByID(data)
+                ? `Suspend ${getMemberEmailByID(data)}?`
+                : `Activate ${getMemberEmailByID(data)}?`}
+            </DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          {Object.keys(rowSelection).length > 0 || data !== undefined ? (
+            <>
+              {Object.keys(rowSelection)
+                .filter((key) => rowSelection[key])
+                .map((id) => {
+                  const member = members.find((m) => m.id === id);
+                  return member ? <p key={id}>{member.email}</p> : null;
+                })}
+              {getStatusByID(data) ? (
+                <Button
+                  onClick={() => suspendMember()}
+                  className="flex items-center gap-2 bg-red-500 w-fit text-white p-2 rounded"
+                >
+                  Suspend
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => activateMember()}
+                  className="flex items-center gap-2 bg-green-500 w-fit text-white p-2 rounded"
+                >
+                  Activate
+                </Button>
+              )}
+            </>
+          ) : (
+            <p>Centang member terlebih dahulu pada kolom paling kiri {data}</p>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={activateModal}
+        onOpenChange={(v: boolean) => setOpenModal("activateModal", v)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Activate {getMemberEmailByID(data)}?</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
           {Object.keys(rowSelection).length > 0 || data !== undefined ? (
@@ -328,10 +411,10 @@ export default function Page() {
                   return member ? <p key={id}>{member.email}</p> : null;
                 })}
               <Button
-                onClick={() => suspendMember()}
-                className="flex items-center gap-2 bg-red-500 w-fit text-white p-2 rounded"
+                onClick={() => activateMember()}
+                className="flex items-center gap-2 bg-green-500 w-fit text-white p-2 rounded"
               >
-                Suspend
+                Activate
               </Button>
             </>
           ) : (

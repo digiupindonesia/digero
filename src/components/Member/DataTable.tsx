@@ -96,6 +96,13 @@ export function DataTable({
     });
   };
 
+  const openModalActivate = () => {
+    // pastikan dropdown close dulu, baru open dialog
+    requestAnimationFrame(() => {
+      useOpenModal.getState().open("activateModal");
+    });
+  };
+
   return (
     <>
       <div className="w-full flex gap-2 items-center justify-end pb-4">
@@ -143,6 +150,12 @@ export function DataTable({
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
+            <DropdownMenuItem
+              className="text-green-500"
+              onClick={openModalActivate}
+            >
+              Activate
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="text-red-500"
               onClick={openModalSuspend}
