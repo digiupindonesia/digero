@@ -56,6 +56,7 @@ interface DataTableProps {
   setRowSelection?: (selection: Record<string, boolean>) => void;
   moveToApproved: (id: string) => void;
   getListReqAcc?: () => void;
+  isLoading?: boolean;
 }
 
 export function DataTable({
@@ -65,6 +66,7 @@ export function DataTable({
   setRowSelection,
   moveToApproved,
   getListReqAcc,
+  isLoading
 }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -231,7 +233,7 @@ export function DataTable({
           onClick={getListReqAcc}
           className="bg-white border hover:bg-zinc-100 transition-all"
         >
-          <TfiReload className="text-black" />
+          <TfiReload className={`text-black ${isLoading && 'animate-spin'}`} />
         </Button>
 
         <DropdownMenu>

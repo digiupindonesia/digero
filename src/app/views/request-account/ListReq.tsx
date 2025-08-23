@@ -109,6 +109,7 @@ export default function ListReq() {
             setRowSelection={setRowSelection}
             moveToApproved={moveToApproved}
             getListReqAcc={getListReqAcc}
+            isLoading={isLoading}
           />
         </div>
       </ContainerComponent>

@@ -18,7 +18,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 // Tambahkan interface untuk callback functions
 interface ColumnActions {
-  onApprove?: (id:string) => void;
+  onApprove?: (id: string) => void;
 }
 
 export const createColumns = (
@@ -87,21 +87,23 @@ export const createColumns = (
         const rowData = row.original;
 
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div className="flex items-center p-2 rounded bg-black cursor-pointer mx-auto">
-                <FaLocationArrow className="cursor-pointer text-white" />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem
-                className="text-green-500"
-                onClick={() => moveToApproved(rowData.id)}
-              >
-                Move to Approved
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          row.original.status !== "APPROVED" && (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div className="flex items-center p-2 rounded bg-black cursor-pointer mx-auto">
+                  <FaLocationArrow className="cursor-pointer text-white" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  className="text-green-500"
+                  onClick={() => moveToApproved(rowData.id)}
+                >
+                  Move to Approved
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )
         );
       },
     },
