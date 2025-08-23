@@ -34,7 +34,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Member } from "@/types/type";
-import { useChangePasswordModal } from "@/stores/changePasswordModal";
+import { useOpenModal } from "@/stores/openModal";
 
 interface DataTableProps {
   columns: ColumnDef<Member, any>[];
@@ -52,7 +52,7 @@ export function DataTable({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const { toggle, open } = useChangePasswordModal();
+  const { toggle, open } = useOpenModal();
 
   const table = useReactTable({
     data,
@@ -81,13 +81,6 @@ export function DataTable({
       rowSelection,
     },
   });
-
-  // const openModalSafely = () => {
-  //   // pastikan dropdown close dulu, baru open dialog
-  //   requestAnimationFrame(() => {
-  //     useChangePasswordModal.getState().open(row.id);
-  //   });
-  // };
 
   return (
     <>
@@ -139,9 +132,6 @@ export function DataTable({
             <DropdownMenuItem className="text-red-500">
               Suspend
             </DropdownMenuItem>
-            {/* <DropdownMenuItem onSelect={openModalSafely}>
-              Ganti Password
-            </DropdownMenuItem> */}
             <DropdownMenuItem>Ubah Fee</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

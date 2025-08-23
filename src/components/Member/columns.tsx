@@ -17,16 +17,21 @@ import { LuArrowUpDown } from "react-icons/lu";
 import { Checkbox } from "@/components/ui/checkbox";
 
 // ✅ import store zustand
-import { useChangePasswordModal } from "@/stores/changePasswordModal"; // sesuaikan path
+import { useOpenModal } from "@/stores/openModal"; // sesuaikan path
 
 // ✅ Komponen sel terpisah agar aman pakai hook
 function ActionCell({ row }: { row: Row<Member> }) {
-  const open = useChangePasswordModal((s) => s.toggle);
-
-  const openModalSafely = () => {
+  const openModalChangePassword = () => {
     // pastikan dropdown close dulu, baru open dialog
     requestAnimationFrame(() => {
-      useChangePasswordModal.getState().open(row.id);
+      useOpenModal.getState().open("changePasswordModal", row.id);
+    });
+  };
+
+  const openModalChangeFee = () => {
+    // pastikan dropdown close dulu, baru open dialog
+    requestAnimationFrame(() => {
+      useOpenModal.getState().open("feeModal", row.id);
     });
   };
 
@@ -41,11 +46,11 @@ function ActionCell({ row }: { row: Row<Member> }) {
         <DropdownMenuItem className="text-red-500">Suspend</DropdownMenuItem>
 
         {/* 🔗 klik ini akan buka modal via Zustand */}
-        <DropdownMenuItem onClick={openModalSafely}>
+        <DropdownMenuItem onClick={openModalChangePassword}>
           Ganti Password
         </DropdownMenuItem>
 
-        <DropdownMenuItem>Ubah Fee</DropdownMenuItem>
+        <DropdownMenuItem onClick={openModalChangeFee}>Ubah Fee</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -85,6 +85,7 @@ const Page = () => {
         setOriginalProfile(profileData);
       }
     } catch (error: any) {
+      notify.error("Error fetching profile");
       console.error("Error fetching profile:", error);
     }
   };
@@ -188,6 +189,7 @@ const Page = () => {
       }
     } catch (error: any) {
       console.error("Error fetching admin fee:", error);
+      notify.error("Error fetching admin fee");
     }
   };
 
@@ -209,7 +211,8 @@ const Page = () => {
         notify.success("Fee updated successfully!");
       }
     } catch (error: any) {
-      console.error("Error fetching admin fee:", error);
+      console.error("Error changing admin fee:", error);
+      notify.error("Error changing admin fee");
     }
   };
 

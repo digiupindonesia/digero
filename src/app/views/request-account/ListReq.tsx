@@ -29,6 +29,7 @@ export default function ListReq() {
         setListReqAccount(response.data.data);
       }
     } catch (error: any) {
+      notify.error("Error fetching list of account requests");
       console.error("Error fetching list of account requests:", error);
     }
   };
@@ -61,6 +62,7 @@ export default function ListReq() {
         notify.success("Status updated successfully");
       }
     } catch (error: any) {
+      notify.error("Error updating status of account request");
       console.error("Error updating status of account request:", error);
     }
   };

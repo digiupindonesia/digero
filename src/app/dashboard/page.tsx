@@ -37,6 +37,7 @@ import axios from "axios";
 import { DateRange } from "react-day-picker";
 import formatDateToYMD from "@/utils/formatDateToYMD";
 import { SummaryAdmin } from "@/types/type";
+import { notify } from "@/utils/notify";
 
 const dummyData = [
   {
@@ -184,6 +185,7 @@ export default function Page() {
         setSummaryAdmin(response.data.data);
       }
     } catch (error: any) {
+      notify.error("Error fetching summary data");
       console.error("Error fetching summary data:", error);
     }
   };
@@ -205,6 +207,7 @@ export default function Page() {
         setSummaryAdmin(response.data.data);
       }
     } catch (error: any) {
+      notify.error("Error fetching summary data");
       console.error("Error fetching summary data:", error);
     }
   };
@@ -226,6 +229,7 @@ export default function Page() {
         console.log("Trend data:", response.data);
       }
     } catch (error: any) {
+      notify.error("Error fetching trend data");
       console.error("Error fetching trend data:", error);
     }
   };
@@ -242,6 +246,7 @@ export default function Page() {
         console.log("Best member data:", response.data);
       }
     }catch(error:any){
+      notify.error("Error fetching best member data");
       console.error("Error fetching best member data:", error);
     }
   }

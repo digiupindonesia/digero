@@ -18,6 +18,7 @@ import { ListReqAccount } from "@/types/type";
 import { produce } from "immer";
 import formatCurrency from "@/utils/formatCurrency";
 import { useRandomNumberStore } from "@/stores/randomNumber";
+import { notify } from "@/utils/notify";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_AKUN_IKLAN_GET = `${API_URL}/api/v1/account-requests/my`;
@@ -95,7 +96,8 @@ export default function FormTopUp({ page, setPage }: FormTopUpProps) {
         setAdsAccount(response.data.data);
       }
     } catch (error: any) {
-      console.log("Error fetching accounts:", error);
+      notify.error("Error fetching accounts");
+      console.error("Error fetching accounts:", error);
     }
   };
 
@@ -107,6 +109,7 @@ export default function FormTopUp({ page, setPage }: FormTopUpProps) {
         paymentMethod: topUp.paymentMethod,
       });
     } catch (error: any) {
+      notify.error("Error submitting top-up");
       console.error("Error submitting top-up:", error);
     }
   };
