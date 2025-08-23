@@ -82,6 +82,20 @@ export function DataTable({
     },
   });
 
+  const openModalChangeFee = () => {
+    // pastikan dropdown close dulu, baru open dialog
+    requestAnimationFrame(() => {
+      useOpenModal.getState().open("feeModal");
+    });
+  };
+
+  const openModalSuspend = () => {
+    // pastikan dropdown close dulu, baru open dialog
+    requestAnimationFrame(() => {
+      useOpenModal.getState().open("suspendModal");
+    });
+  };
+
   return (
     <>
       <div className="w-full flex gap-2 items-center justify-end pb-4">
@@ -129,10 +143,15 @@ export function DataTable({
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem className="text-red-500">
+            <DropdownMenuItem
+              className="text-red-500"
+              onClick={openModalSuspend}
+            >
               Suspend
             </DropdownMenuItem>
-            <DropdownMenuItem>Ubah Fee</DropdownMenuItem>
+            <DropdownMenuItem onClick={openModalChangeFee}>
+              Ubah Fee
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -35,6 +35,13 @@ function ActionCell({ row }: { row: Row<Member> }) {
     });
   };
 
+  const openModalSuspen = () => {
+    // pastikan dropdown close dulu, baru open dialog
+    requestAnimationFrame(() => {
+      useOpenModal.getState().open("suspendModal", row.id);
+    });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -43,7 +50,7 @@ function ActionCell({ row }: { row: Row<Member> }) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem className="text-red-500">Suspend</DropdownMenuItem>
+        <DropdownMenuItem className="text-red-500" onClick={openModalSuspen}>Suspend</DropdownMenuItem>
 
         {/* 🔗 klik ini akan buka modal via Zustand */}
         <DropdownMenuItem onClick={openModalChangePassword}>

@@ -31,10 +31,17 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_MEMBERS = `${API_URL}/api/v1/members?role=USER`;
 const CHANGE_PASSWORD_PATCH = `${API_URL}/api/v1/admin/users/`;
 const CHANGE_FEE_PATCH = `${API_URL}/api/v1/admin/users/bulk/fee`;
+const SUSPEND_MEMBER_PATCH = `${API_URL}/api/v1/admin/users/bulk/suspend`;
 
 export default function Page() {
-  const { changePasswordModal, feeModal, setOpenModal, data, reset } =
-    useOpenModal();
+  const {
+    changePasswordModal,
+    feeModal,
+    suspendModal,
+    setOpenModal,
+    data,
+    reset,
+  } = useOpenModal();
   const { auth, isHydrated } = useAuthStore();
   const [members, setMembers] = useState<Member[]>([]);
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
@@ -92,6 +99,7 @@ export default function Page() {
 
       if (response.status === 200) {
         reset();
+        setRowSelection({});
         notify.success("Password changed successfully");
       }
     } catch (error: any) {
@@ -104,11 +112,15 @@ export default function Page() {
     const idsArray = Object.keys(rowSelection).filter(
       (key) => rowSelection[key]
     );
+
+    // Prioritaskan data dari useOpenModal, jika tidak ada gunakan idsArray
+    const ids = data ? [data] : idsArray;
+
     try {
       const response = await axios.patch(
         `${CHANGE_FEE_PATCH}`,
         {
-          ids: idsArray,
+          ids: ids,
           feePercent: newFee.newFee,
         },
         {
@@ -120,6 +132,7 @@ export default function Page() {
 
       if (response.status === 200) {
         reset();
+        setRowSelection({});
         getMember();
         notify.success("Fee changed successfully");
       }
@@ -195,7 +208,7 @@ export default function Page() {
             <DialogTitle>Ubah Fee {getMemberEmailByID(data)}?</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          {rowSelection ? (
+          {Object.keys(rowSelection).length > 0 || data !== "" ? (
             <div className="w-full flex flex-col gap-2 items-end">
               <Input
                 type="text"
@@ -232,6 +245,36 @@ export default function Page() {
             </div>
           ) : (
             <p>Centang member terlebih dahulu pada kolom paling kiri</p>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={suspendModal}
+        onOpenChange={(v: boolean) => setOpenModal("suspendModal", v)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Suspend {getMemberEmailByID(data)}?</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          {Object.keys(rowSelection).length > 0 || data !== "" ? (
+            <>
+              {Object.keys(rowSelection)
+                .filter((key) => rowSelection[key])
+                .map((id) => {
+                  const member = members.find((m) => m.id === id);
+                  return member ? <p key={id}>{member.email}</p> : null;
+                })}
+              <Button
+                // onClick={() => changeFee()}
+                className="flex items-center gap-2 bg-red-500 w-fit text-white p-2 rounded"
+              >
+                Suspend
+              </Button>
+            </>
+          ) : (
+            <p>Centang member terlebih dahulu pada kolom paling kiri {data}</p>
           )}
         </DialogContent>
       </Dialog>
