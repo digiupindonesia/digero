@@ -244,6 +244,7 @@ export function DataTable({ columns, data, rowSelection, setRowSelection, moveTo
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+
         <div className="max-w-sm">
           <InputComponent
             Icon={FaSearch}
@@ -261,6 +262,7 @@ export function DataTable({ columns, data, rowSelection, setRowSelection, moveTo
             }
           />
         </div>
+
         <DropdownMenu>
           <DropdownMenuTrigger>
             <div className="flex items-center p-2 rounded bg-black cursor-pointer mx-auto">
@@ -270,7 +272,7 @@ export function DataTable({ columns, data, rowSelection, setRowSelection, moveTo
           <DropdownMenuContent>
             <DropdownMenuLabel>Action</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               // onClick={() => setStatusFilter("pending")}
               className={`${statusFilter === "pending" ? "bg-gray-100" : ""}`}
             >
@@ -283,7 +285,7 @@ export function DataTable({ columns, data, rowSelection, setRowSelection, moveTo
               } text-yellow-500`}
             >
               Move to Processing
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem
               onClick={() => moveToApproved()}
               className={`${

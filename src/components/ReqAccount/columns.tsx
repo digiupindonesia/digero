@@ -16,7 +16,14 @@ import {
 import { LuArrowUpDown } from "react-icons/lu";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export const columns: ColumnDef<ListReqAccount>[] = [
+// Tambahkan interface untuk callback functions
+interface ColumnActions {
+  onApprove?: () => void;
+}
+
+export const createColumns = (
+  actions: ColumnActions
+): ColumnDef<ListReqAccount>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -41,7 +48,6 @@ export const columns: ColumnDef<ListReqAccount>[] = [
   },
   {
     accessorKey: "createdAt",
-    // header: "Member",
     header: ({ column }) => {
       return (
         <Button
@@ -73,6 +79,8 @@ export const columns: ColumnDef<ListReqAccount>[] = [
   {
     header: "Action",
     cell: ({ row }) => {
+      const rowData = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger>
@@ -81,12 +89,11 @@ export const columns: ColumnDef<ListReqAccount>[] = [
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {/* <DropdownMenuItem>Pending</DropdownMenuItem> */}
-            <DropdownMenuItem className="text-yellow-500">
-              Move to Processing
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-green-500">
-              Move to Added
+            <DropdownMenuItem
+              className="text-green-500"
+              onClick={() => actions.onApprove?.()}
+            >
+              Move to Approved
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -94,3 +101,6 @@ export const columns: ColumnDef<ListReqAccount>[] = [
     },
   },
 ];
+
+// Export untuk backward compatibility jika ada yang masih menggunakan
+export const columns = createColumns({});

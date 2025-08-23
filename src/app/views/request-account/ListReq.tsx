@@ -1,16 +1,17 @@
 import ContainerComponent from "@/components/ContainerComponent";
 import { DataTable } from "@/components/ReqAccount/DataTable";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { columns } from "@/components/ReqAccount/columns";
 import { ListReqAccount } from "@/types/type";
 import { useAuthStore } from "@/stores/useAuthStore";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import { notify } from "@/utils/notify";
+import { createColumns } from "@/components/ReqAccount/columns";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_LIST_REQ_ACC = `${API_URL}/api/v1/account-requests`;
-const PUT_UPDATE_STATUS_REQ_ACC = `${API_URL}/api/v1/account-requests/`;
+const PUT_UPDATE_STATUS_REQ_ACC = `${API_URL}/api/v1/account-requests/bulk/status`;
 
 export default function ListReq() {
   const { auth, isHydrated } = useAuthStore();
@@ -35,6 +36,11 @@ export default function ListReq() {
   };
 
   const moveToApproved = async () => {
+    if (Object.keys(rowSelection).length === 0) {
+      notify.error("No rows selected");
+      return;
+    }
+
     const ids = Object.keys(rowSelection) // ambil key
       .filter((key) => rowSelection[key]) // hanya ambil yang true
       .join(","); // gabungkan jadi string
@@ -45,7 +51,7 @@ export default function ListReq() {
 
     try {
       const response = await axios.put(
-        `${PUT_UPDATE_STATUS_REQ_ACC}:id/status`,
+        `${PUT_UPDATE_STATUS_REQ_ACC}`,
         {
           ids: idsArray,
           status: "APPROVED",
@@ -59,6 +65,7 @@ export default function ListReq() {
       );
 
       if (response.status === 200) {
+        getListReqAcc();
         notify.success("Status updated successfully");
       }
     } catch (error: any) {
@@ -66,6 +73,15 @@ export default function ListReq() {
       console.error("Error updating status of account request:", error);
     }
   };
+
+  // Buat columns dengan callback
+  const columns = useMemo(
+    () =>
+      createColumns({
+        onApprove: moveToApproved,
+      }),
+    []
+  );
 
   useEffect(() => {
     if (isHydrated && auth?.accessToken) {
