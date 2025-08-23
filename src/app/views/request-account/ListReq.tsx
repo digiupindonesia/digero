@@ -17,8 +17,10 @@ export default function ListReq() {
   const { auth, isHydrated } = useAuthStore();
   const [listReqAccount, setListReqAccount] = useState<ListReqAccount[]>([]);
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getListReqAcc = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(GET_LIST_REQ_ACC, {
         headers: {
@@ -27,33 +29,35 @@ export default function ListReq() {
       });
 
       if (response.status === 200) {
+        setIsLoading(false);
         setListReqAccount(response.data.data);
       }
     } catch (error: any) {
+      setIsLoading(false);
       notify.error("Error fetching list of account requests");
       console.error("Error fetching list of account requests:", error);
     }
   };
 
-  const moveToApproved = async () => {
-    if (Object.keys(rowSelection).length === 0) {
-      notify.error("No rows selected");
-      return;
-    }
-
-    const ids = Object.keys(rowSelection) // ambil key
-      .filter((key) => rowSelection[key]) // hanya ambil yang true
-      .join(","); // gabungkan jadi string
-
+  const moveToApproved = async (id:string) => {
     const idsArray = Object.keys(rowSelection).filter(
       (key) => rowSelection[key]
     );
+
+    // Prioritaskan id dari parameter, jika tidak ada gunakan idsArray
+    const ids = id ? [id] : idsArray;
+
+    // Validasi jika tidak ada ID yang akan diproses
+    if (ids.length === 0) {
+      notify.error("No items to approve");
+      return;
+    }
 
     try {
       const response = await axios.put(
         `${PUT_UPDATE_STATUS_REQ_ACC}`,
         {
-          ids: idsArray,
+          ids: ids,
           status: "APPROVED",
           rejectionReason: null,
         },
@@ -65,6 +69,8 @@ export default function ListReq() {
       );
 
       if (response.status === 200) {
+        // Clear selection dan reset global state setelah berhasil
+        setRowSelection({});
         getListReqAcc();
         notify.success("Status updated successfully");
       }
@@ -102,6 +108,7 @@ export default function ListReq() {
             rowSelection={rowSelection}
             setRowSelection={setRowSelection}
             moveToApproved={moveToApproved}
+            getListReqAcc={getListReqAcc}
           />
         </div>
       </ContainerComponent>

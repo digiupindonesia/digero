@@ -47,20 +47,29 @@ import { MdAccessTime } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { FaCheckDouble } from "react-icons/fa6";
 import { MdOutlineFilterList } from "react-icons/md";
+import { TfiReload } from "react-icons/tfi";
 
 interface DataTableProps {
   columns: ColumnDef<ListReqAccount>[];
   data: ListReqAccount[];
   rowSelection?: Record<string, boolean>;
   setRowSelection?: (selection: Record<string, boolean>) => void;
-  moveToApproved: () => void;
+  moveToApproved: (id: string) => void;
+  getListReqAcc?: () => void;
 }
 
-export function DataTable({ columns, data, rowSelection, setRowSelection, moveToApproved }: DataTableProps) {
+export function DataTable({
+  columns,
+  data,
+  rowSelection,
+  setRowSelection,
+  moveToApproved,
+  getListReqAcc,
+}: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  
+
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
   // Filter data berdasarkan status dengan useMemo untuk optimasi
@@ -218,6 +227,13 @@ export function DataTable({ columns, data, rowSelection, setRowSelection, moveTo
           </DropdownMenuContent>
         </DropdownMenu>
 
+        <Button
+          onClick={getListReqAcc}
+          className="bg-white border hover:bg-zinc-100 transition-all"
+        >
+          <TfiReload className="text-black" />
+        </Button>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -287,7 +303,17 @@ export function DataTable({ columns, data, rowSelection, setRowSelection, moveTo
               Move to Processing
             </DropdownMenuItem> */}
             <DropdownMenuItem
-              onClick={() => moveToApproved()}
+              onClick={() => {
+                // Ambil selected rows
+                const selectedRows = table.getFilteredSelectedRowModel().rows;
+                if (selectedRows.length > 0) {
+                  // Panggil moveToApproved tanpa parameter, karena akan menggunakan rowSelection
+                  moveToApproved("");
+                } else {
+                  // Jika tidak ada yang dipilih, tampilkan pesan
+                  console.log("No rows selected");
+                }
+              }}
               className={`${
                 statusFilter === "added" ? "bg-gray-100" : ""
               } text-green-500`}
