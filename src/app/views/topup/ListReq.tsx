@@ -1,8 +1,8 @@
 import ContainerComponent from "@/components/ContainerComponent";
 import { DataTable } from "@/components/ReqTopUp/DataTable";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { columns } from "@/components/ReqTopUp/columns";
-// import listReqTopUp from "@/assets/data/listReqTopUp";
+import { createColumns } from "@/components/ReqTopUp/columns";
 import { TopUp } from "@/types/type";
 import { notify } from "@/utils/notify";
 import axios from "axios";
@@ -10,11 +10,12 @@ import { useAuthStore } from "@/stores/useAuthStore";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_LIST_REQ_TOPUP = `${API_URL}/api/v1/payment`;
+const POST_MOVE_TO_PAID = `${API_URL}/api/v1/payment/bulk/mark-paid`;
 
 export default function ListReq() {
   const { auth, isHydrated } = useAuthStore();
   const [listReqTopUp, setListReqTopUp] = useState<TopUp[]>([]);
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
   const getListTopUp = async () => {
     try {
@@ -33,13 +34,58 @@ export default function ListReq() {
     }
   };
 
+  const handleMoveToPaid = async (id: string) => {
+    const idsArray = Object.keys(rowSelection).filter(
+      (key) => rowSelection[key]
+    );
+
+    // Prioritaskan id dari parameter, jika tidak ada gunakan idsArray
+    const ids = id ? [id] : idsArray;
+
+    // Validasi jika tidak ada ID yang akan diproses
+    if (ids.length === 0) {
+      notify.error("No items to approve");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${POST_MOVE_TO_PAID}`,
+        {
+          ids: ids,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Clear selection dan reset global state setelah berhasil
+        setRowSelection({});
+        getListTopUp();
+        notify.success("Status updated successfully");
+      }
+    } catch (error: any) {
+      notify.error("Error moving to paid.");
+      console.error("Error moving to paid:", error);
+    }
+  };
+
+  const columns = useMemo(
+    () =>
+      createColumns({
+        onPaid: handleMoveToPaid,
+      }),
+    []
+  );
+
   useEffect(() => {
     if (isHydrated && auth) {
       getListTopUp();
     }
   }, [auth, isHydrated]);
-
-  console.log("row Selection:", rowSelection);
 
   return (
     <ContainerComponent title="List Request">
@@ -49,7 +95,7 @@ export default function ListReq() {
           data={listReqTopUp}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
-          //     moveToApproved={moveToApproved}
+          moveToPaid={handleMoveToPaid}
           //     getListReqAcc={getListReqAcc}
           //     isLoading={isLoading}
         />

@@ -53,6 +53,7 @@ interface DataTableProps {
   data: TopUp[];
   rowSelection: Record<string, boolean>;
   setRowSelection: (selection: Record<string, boolean>) => void;
+  moveToPaid: (id: string) => void;
 }
 
 export function DataTable({
@@ -60,6 +61,7 @@ export function DataTable({
   data,
   rowSelection,
   setRowSelection,
+  moveToPaid,
 }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -107,6 +109,7 @@ export function DataTable({
         }
       : undefined,
     getPaginationRowModel: getPaginationRowModel(),
+    getRowId: (row) => row.id,
     state: {
       sorting,
       columnFilters,
@@ -252,13 +255,10 @@ export function DataTable({
             className="w-full py-0"
             placeholder="Filter tanggal order..."
             value={
-              (table.getColumn("createdAt")?.getFilterValue() as string) ??
-              ""
+              (table.getColumn("createdAt")?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
-              table
-                .getColumn("createdAt")
-                ?.setFilterValue(event.target.value)
+              table.getColumn("createdAt")?.setFilterValue(event.target.value)
             }
           />
         </div>
@@ -277,22 +277,31 @@ export function DataTable({
             >
               Pending
             </DropdownMenuItem> */}
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               // onClick={() => setStatusFilter("processing")}
               className={`${
                 statusFilter === "processing" ? "bg-gray-100" : ""
               } text-yellow-500`}
             >
               Move to Processing
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem
-              // onClick={() => setStatusFilter("added")}
-              // className={statusFilter === "added" ? "bg-gray-100" : ""}
+              onClick={() => {
+                // Ambil selected rows
+                const selectedRows = table.getFilteredSelectedRowModel().rows;
+                if (selectedRows.length > 0) {
+                  // Panggil moveToPaid tanpa parameter, karena akan menggunakan rowSelection
+                  moveToPaid("");
+                } else {
+                  // Jika tidak ada yang dipilih, tampilkan pesan
+                  console.log("No rows selected");
+                }
+              }}
               className={`${
                 statusFilter === "complete" ? "bg-gray-100" : ""
               } text-green-500`}
             >
-              Move to Completed
+              Move to Paid
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
