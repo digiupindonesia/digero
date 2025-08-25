@@ -54,14 +54,14 @@ interface DateRange {
 }
 
 // Payload utama sesuai struktur Anda
-export interface SummaryAdmin {
+export interface Summary {
   dateRange: DateRange;
-  membersCount: number;
-  memberTopupCount: number;
-  avgTopupFreq: number;
-  totalNominalTopup: number;
-  totalFeeTopup: number;
-  avgNominalTopup: number;
+  membersCount: number; // admin
+  memberTopupCount: number; // admin
+  avgTopupFreq: number; // admin
+  totalNominalTopup: number; // admin // user
+  totalFeeTopup: number; // admin
+  avgNominalTopup: number; // admin // user
   totalTopups: number;
   statusBreakdown: Record<StatusKey, StatusDetail>;
 }
@@ -126,3 +126,17 @@ export interface TopUp {
     lastName: string | null;
   };
 }
+
+export type TrendDashboard = {
+  dateRange: {
+    from: string; // ISO Date string
+    to: string;   // ISO Date string
+  };
+  granularity: "day" | "week" | "month" | "year"; // bisa dibuat union type
+  data: {
+    label: string;
+    totalNominalTopup: number;
+    totalFeeTopup: number;
+    count: number;
+  }[];
+};

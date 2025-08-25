@@ -9,6 +9,7 @@ interface HeaderPageProps {
   isButton?: boolean;
   customComponent?: ReactNode;
 }
+const csNumber = process.env.NEXT_PUBLIC_CS_NUMBER;
 
 const HeaderPage = ({
   title,
@@ -17,11 +18,14 @@ const HeaderPage = ({
   customComponent,
 }: HeaderPageProps) => {
   const {auth} = useAuthStore()
+  const callCustomerServices = () => {
+    window.open(`https://wa.me/${csNumber}`, "_blank")
+  }
   return (
     <div className="w-full flex justify-between items-center bg-white p-6">
       <h1 className="text-2xl font-bold">{title}</h1>
       {isButton && auth?.user.role === "USER" && (
-        <Button className="bg-black text-white p-2 rounded flex items-center gap-2">
+        <Button onClick={()=>callCustomerServices()} className="bg-black text-white p-2 rounded flex items-center gap-2">
           {Icon && <Icon className="text-xl" />}
           Hubungi CS
         </Button>

@@ -36,7 +36,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import axios from "axios";
 import { DateRange } from "react-day-picker";
 import formatDateToYMD from "@/utils/formatDateToYMD";
-import { SummaryAdmin } from "@/types/type";
+import { Summary, TrendDashboard } from "@/types/type";
 import { notify } from "@/utils/notify";
 
 const dummyData = [
@@ -134,6 +134,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const SUMMARY_ADMIN_GET = `${API_URL}/api/v1/admin/analytics/summary`;
 const SUMMARY_USER_GET = `${API_URL}/api/v1/analytics/summary`;
 const TREND_ADMIN_GET = `${API_URL}/api/v1/admin/analytics/trends`;
+const TREND_USER_GET = `${API_URL}/api/v1/analytics/trends?granularity=month`;
 const BEST_MEMBER_GET = `${API_URL}/api/v1/admin/analytics/top-members`;
 
 export default function Page() {
@@ -148,7 +149,7 @@ export default function Page() {
     to: new Date(),
   });
 
-  const [summaryAdmin, setSummaryAdmin] = useState<SummaryAdmin>({
+  const [summary, setSummary] = useState<Summary>({
     dateRange: {
       from: "",
       to: "",
@@ -168,6 +169,15 @@ export default function Page() {
     },
   });
 
+  const [trend, setTrend] = useState<TrendDashboard>({
+    dateRange: {
+      from: "",
+      to: "",
+    },
+    granularity: "month",
+    data: [],
+  });
+
   const getSummaryAdmin = async () => {
     try {
       const response = await axios.get(
@@ -182,7 +192,7 @@ export default function Page() {
       );
 
       if (response.status === 200) {
-        setSummaryAdmin(response.data.data);
+        setSummary(response.data.data);
       }
     } catch (error: any) {
       notify.error("Error fetching summary data");
@@ -195,7 +205,7 @@ export default function Page() {
       const response = await axios.get(
         `${SUMMARY_USER_GET}?from=${formatDateToYMD(
           date?.from
-        )}&to=${formatDateToYMD(date?.to)}&memberId=`,
+        )}&to=${formatDateToYMD(date?.to)}`,
         {
           headers: {
             Authorization: `Bearer ${auth?.accessToken}`,
@@ -204,7 +214,7 @@ export default function Page() {
       );
 
       if (response.status === 200) {
-        setSummaryAdmin(response.data.data);
+        setSummary(response.data.data);
       }
     } catch (error: any) {
       notify.error("Error fetching summary data");
@@ -226,7 +236,29 @@ export default function Page() {
       );
 
       if (response.status === 200) {
-        console.log("Trend data:", response.data);
+        setTrend(response.data.data);
+      }
+    } catch (error: any) {
+      notify.error("Error fetching trend data");
+      console.error("Error fetching trend data:", error);
+    }
+  };
+
+  const getTrendUser = async () => {
+    try {
+      const response = await axios.get(
+        `${TREND_USER_GET}&from=${formatDateToYMD(
+          date?.from
+        )}&to=${formatDateToYMD(date?.to)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setTrend(response.data.data);
       }
     } catch (error: any) {
       notify.error("Error fetching trend data");
@@ -235,21 +267,21 @@ export default function Page() {
   };
 
   const getBestMember = async () => {
-    try{
-      const response = await axios.get(BEST_MEMBER_GET,{
-        headers:{
+    try {
+      const response = await axios.get(BEST_MEMBER_GET, {
+        headers: {
           Authorization: `Bearer ${auth?.accessToken}`,
-        }
-      })
+        },
+      });
 
-      if(response.status === 200){
+      if (response.status === 200) {
         console.log("Best member data:", response.data);
       }
-    }catch(error:any){
+    } catch (error: any) {
       notify.error("Error fetching best member data");
       console.error("Error fetching best member data:", error);
     }
-  }
+  };
 
   useEffect(() => {
     if (isHydrated && auth?.accessToken) {
@@ -259,8 +291,10 @@ export default function Page() {
         getBestMember();
       }
 
-      // if(auth?.user.role === "USER"){
-      // }
+      if (auth?.user.role === "USER") {
+        getTrendUser();
+        getSummaryUser();
+      }
     }
   }, [auth, isHydrated]);
 
@@ -280,37 +314,60 @@ export default function Page() {
             <div className="md:p-5 lg:p-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               <CardDashboard
                 title="Jumlah Member"
-                value={summaryAdmin.membersCount}
+                value={summary.membersCount}
                 isCurrency={false}
                 icon={MdOutlineDashboardCustomize}
               />
               <CardDashboard
                 title="Member Freq Top Up"
-                value={summaryAdmin.memberTopupCount}
+                value={summary.memberTopupCount}
                 isCurrency={false}
                 icon={MdOutlineDashboardCustomize}
               />
               <CardDashboard
                 title="AVG Freq Top Up"
-                value={summaryAdmin.avgTopupFreq}
+                value={summary.avgTopupFreq}
                 isCurrency={false}
                 icon={MdOutlineDashboardCustomize}
               />
               <CardDashboard
                 title="Total Nominal Top Up"
-                value={summaryAdmin.totalNominalTopup}
+                value={summary.totalNominalTopup}
                 isCurrency={true}
                 icon={MdOutlineDashboardCustomize}
               />
               <CardDashboard
                 title="Total Fee Top Up"
-                value={summaryAdmin.totalFeeTopup}
+                value={summary.totalFeeTopup}
                 isCurrency={true}
                 icon={MdOutlineDashboardCustomize}
               />
               <CardDashboard
                 title="AVG Nominal Top Up"
-                value={summaryAdmin.avgNominalTopup}
+                value={summary.avgNominalTopup}
+                isCurrency={true}
+                icon={MdOutlineDashboardCustomize}
+              />
+            </div>
+          )}
+
+          {auth?.user.role === "USER" && (
+            <div className="md:p-5 lg:p-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              <CardDashboard
+                title="Total Nominal Topup"
+                value={summary.totalNominalTopup}
+                isCurrency={true}
+                icon={MdOutlineDashboardCustomize}
+              />
+              <CardDashboard
+                title="Freq Topup"
+                value={0}
+                isCurrency={false}
+                icon={MdOutlineDashboardCustomize}
+              />
+              <CardDashboard
+                title="AVG Nominal Topup"
+                value={summary.avgNominalTopup}
                 isCurrency={true}
                 icon={MdOutlineDashboardCustomize}
               />
@@ -326,7 +383,7 @@ export default function Page() {
                     </div>
                     <p className="text-base leading-none">Tren Topup</p>
                   </div>
-                  <BarChartTrend />
+                  <BarChartTrend data={trend.data} />
                 </div>
               </div>
 
@@ -338,7 +395,9 @@ export default function Page() {
                     </div>
                     <p className="text-base leading-none">Topup Status</p>
                   </div>
-                  <BarStatusComponent />
+                  <BarStatusComponent
+                    statusBreakdown={summary.statusBreakdown}
+                  />
                 </div>
               </div>
             </div>
@@ -398,13 +457,13 @@ export default function Page() {
   );
 }
 
-const BarChartTrend = () => {
+const BarChartTrend = ({ data }: { data: TrendDashboard["data"] }) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         width={100}
         height={500}
-        data={dummyTrenData}
+        data={data}
         margin={{
           top: 5,
           right: 30,
@@ -413,18 +472,30 @@ const BarChartTrend = () => {
         }}
       >
         {/* <CartesianGrid strokeDasharray="3 3" /> */}
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
+        <XAxis dataKey="label" />
+        <YAxis tickFormatter={(val) => formatCurrency(Number(val))} />
+        <Tooltip
+          formatter={(value: number, name: string) => {
+            const label =
+              name === "totalNominalTopup"
+                ? "Topup"
+                : name === "totalFeeTopup"
+                ? "Fee"
+                : name;
+            return [formatCurrency(Number(value)), label];
+          }}
+        />
         <Legend />
         <Bar
-          dataKey="pv"
+          dataKey="totalNominalTopup"
+          name={"TopUp"}
           barSize={16}
           fill="#E1B32A"
           activeBar={<Rectangle fill="#E1B32A" stroke="black" />}
         />
         <Bar
-          dataKey="amt"
+          dataKey="totalFeeTopup"
+          name={"Fee"}
           barSize={16}
           fill="#E1822A"
           activeBar={<Rectangle fill="#E1822A" stroke="black" />}
@@ -434,14 +505,35 @@ const BarChartTrend = () => {
   );
 };
 
-const BarStatusComponent = () => {
+const BarStatusComponent = ({
+  statusBreakdown,
+}: {
+  statusBreakdown: Summary["statusBreakdown"];
+}) => {
+  // Convert statusBreakdown object to array for recharts
+  const chartData = [
+    {
+      name: "Pending",
+      pending: statusBreakdown.PENDING.percent,
+    },
+    {
+      name: "Processing",
+      processing: statusBreakdown.PAID.percent,
+    },
+    {
+      name: "Completed",
+      completed: statusBreakdown.EXPIRED.percent,
+    },
+    // Add more statuses if needed
+  ];
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         className="pb-5"
         width={100}
         height={500}
-        data={dummyStatusData}
+        data={chartData}
         margin={{
           top: 5,
           right: 30,
@@ -504,7 +596,7 @@ const BarStatusComponent = () => {
                   x={cx}
                   y={cy}
                   textAnchor="middle"
-                  fontSize={15}
+                  fontSize={10}
                   fontWeight={700}
                   fill="#fff"
                 >
