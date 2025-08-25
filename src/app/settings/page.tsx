@@ -36,6 +36,7 @@ const UPDATE_PROFILE_PUT = `${API_URL}/api/v1/profile/me`;
 const CHANGE_PASSWORD_PUT = `${API_URL}/api/v1/profile/me/password`;
 const CHANGE_FEE_PUT = `${API_URL}/api/v1/admin/settings/fee`;
 const GET_FEE_ADMIN = `${API_URL}/api/v1/admin/settings/fee`;
+const POST_WOOWA_API_KEYS = `${API_URL}/api/v1/woowa-api-keys`;
 
 type Profile = {
   id: string;
@@ -65,6 +66,7 @@ const Page = () => {
     newPassword: "",
   });
   const [fee, setFee] = useState<number>(5); // Default fee
+  const [woowaApiKey, setWoowaApiKey] = useState<string>("");
 
   const strength = useMemo(
     () => calcStrength(password.newPassword),
@@ -87,6 +89,25 @@ const Page = () => {
     } catch (error: any) {
       notify.error("Error fetching profile");
       console.error("Error fetching profile:", error);
+    }
+  };
+
+  const submitWoowaApiKey = async () => {
+    try {
+      const response = await axios.post(POST_WOOWA_API_KEYS, {
+        key: woowaApiKey,
+      }, {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        notify.success("Woowa API Key added successfully!");
+      }
+    } catch (error: any) {
+      notify.error("Error adding Woowa API Key");
+      console.error("Error adding Woowa API Key:", error);
     }
   };
 
@@ -425,9 +446,19 @@ const Page = () => {
                   </div>
                   <div className="flex flex-row gap-2 items-center w-full">
                     <div className="w-11/12">
-                      <Input placeholder="" className="my-1" />
+                      <Input
+                        placeholder=""
+                        className="my-1"
+                        onChange={(e) =>
+                          setWoowaApiKey(
+                            produce(woowaApiKey, (draft) => {
+                              draft = e.target.value;
+                            })
+                          )
+                        }
+                      />
                     </div>
-                    <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
+                    <Button onClick={() => submitWoowaApiKey()} className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
                       <FaPlus />
                     </Button>
                   </div>
@@ -435,7 +466,7 @@ const Page = () => {
                 <div className="w-full xl:w-6/12 flex flex-col gap-2">
                   <div className="flex gap-2">
                     <TbApi className="text-2xl" />
-                    <p className="text-base font-normal">API Woowa</p>
+                    <p className="text-base font-normal">API Moota</p>
                   </div>
                   <div className="flex flex-row gap-2 items-center w-full">
                     <div className="w-11/12">
