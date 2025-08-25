@@ -1,8 +1,11 @@
 import ContainerComponent from "@/components/ContainerComponent";
 import { useReqAccStore } from "@/stores/reqAcc";
 import { useAuthStore } from "@/stores/useAuthStore";
+import Link from "next/link";
 import React from "react";
 import { ToastContainer } from "react-toastify";
+
+const CS_NUMBER = process.env.NEXT_PUBLIC_CS_NUMBER;
 
 export default function ThankYou() {
   const { form } = useReqAccStore();
@@ -38,10 +41,13 @@ export default function ThankYou() {
               <p className="text-lg leading-relaxed">
                 Kami akan proses dengan segera, silahkan tunggu. Untuk proses
                 lebih cepat, hubungi CS kami dengan klik{" "}
-                <a href="/kontak" className="text-yellow-500 underline">
+                <Link
+                  href={`https://wa.me/${CS_NUMBER}`}
+                  target="_blank"
+                  className="text-yellow-500 underline"
+                >
                   disini
-                </a>
-                .
+                </Link>
               </p>
             </div>
           </div>

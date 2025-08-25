@@ -36,7 +36,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import axios from "axios";
 import { DateRange } from "react-day-picker";
 import formatDateToYMD from "@/utils/formatDateToYMD";
-import { Summary, TrendDashboard } from "@/types/type";
+import { Summary, TopMember, TrendDashboard } from "@/types/type";
 import { notify } from "@/utils/notify";
 
 const dummyData = [
@@ -74,59 +74,6 @@ const dummyData = [
     topupFreq: 130,
     amount: 30000000,
     fee: 6,
-  },
-];
-
-const dummyTrenData = [
-  {
-    name: "Jan",
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Feb",
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Mar",
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Apr",
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "May",
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Jun",
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Jul",
-    pv: 4300,
-    amt: 2100,
-  },
-];
-
-const dummyStatusData = [
-  {
-    name: "Pending",
-    pending: 20,
-  },
-  {
-    name: "Processing",
-    processing: 30,
-  },
-  {
-    name: "Completed",
-    completed: 50,
   },
 ];
 
@@ -177,6 +124,9 @@ export default function Page() {
     granularity: "month",
     data: [],
   });
+
+  const [topMember, setTopMember] = useState<TopMember[]>([]);
+  console.log("top member:", topMember);
 
   const getSummaryAdmin = async () => {
     try {
@@ -275,7 +225,7 @@ export default function Page() {
       });
 
       if (response.status === 200) {
-        console.log("Best member data:", response.data);
+        setTopMember(response.data.data.data);
       }
     } catch (error: any) {
       notify.error("Error fetching best member data");
@@ -296,7 +246,7 @@ export default function Page() {
         getSummaryUser();
       }
     }
-  }, [auth, isHydrated]);
+  }, [auth, isHydrated, date]);
 
   return (
     <ContainerPage title="Dashboard" isHeader={false}>
@@ -414,12 +364,12 @@ export default function Page() {
                       <TableHead className="w-40">Freq Topup</TableHead>
                       <TableHead className="w-52">Total</TableHead>
                       <TableHead className="w-24">Fee</TableHead>
-                      <TableHead className="w-40">Fee (Rp)</TableHead>
+                      {/* <TableHead className="w-40">Fee (Rp)</TableHead> */}
                     </TableRow>
                   </TableHeader>
 
                   <TableBody className="font-variant-numeric tabular-nums">
-                    {dummyData.map((item, i) => (
+                    {topMember.map((item, i) => (
                       <TableRow key={i}>
                         <TableCell className="text-center">
                           {i === 0 ? (
@@ -429,21 +379,25 @@ export default function Page() {
                           )}
                         </TableCell>
                         <TableCell className="font-medium">
-                          {item.name}
+                          {item.username}
                         </TableCell>
                         <TableCell className="whitespace-nowrap">
-                          {item.topupFreq} Kali Topup
+                          {item.topupCount} Kali Topup
                         </TableCell>
                         <TableCell className="whitespace-nowrap">
-                          Total Rp {formatCurrency(item.amount)}
+                          Total Rp {formatCurrency(item.totalNominalTopup)}
                         </TableCell>
                         <TableCell className="whitespace-nowrap">
-                          Fee {item.fee}%
+                          Fee {formatCurrency(item.totalFeeTopup)}
                         </TableCell>
-                        <TableCell className="whitespace-nowrap">
-                          Rp{" "}
-                          {formatCurrency(feeCalculator(item.amount, item.fee))}
-                        </TableCell>
+                        {/* <TableCell className="whitespace-nowrap">
+                          {formatCurrency(
+                            feeCalculator(
+                              item.totalNominalTopup,
+                              item.totalFeeTopup
+                            )
+                          )}
+                        </TableCell> */}
                       </TableRow>
                     ))}
                   </TableBody>
@@ -510,130 +464,105 @@ const BarStatusComponent = ({
 }: {
   statusBreakdown: Summary["statusBreakdown"];
 }) => {
-  // Convert statusBreakdown object to array for recharts
+  // Data internal untuk chart (tanpa mengubah type eksternal)
   const chartData = [
-    {
-      name: "Pending",
-      pending: statusBreakdown.PENDING.percent,
-    },
-    {
-      name: "Processing",
-      processing: statusBreakdown.PAID.percent,
-    },
-    {
-      name: "Completed",
-      completed: statusBreakdown.EXPIRED.percent,
-    },
-    // Add more statuses if needed
+    { name: "PENDING", PENDING: statusBreakdown.PENDING.percent },
+    { name: "PAID", PAID: statusBreakdown.PAID.percent },
+    { name: "EXPIRED", EXPIRED: statusBreakdown.EXPIRED.percent },
+    { name: "CANCELED", CANCELED: statusBreakdown.CANCELED.percent },
   ];
+
+  const LabelInside = (props: any) => {
+    const { x = 0, y = 0, width = 0, value } = props;
+    const cx = x + width / 2;
+    const cy = y + 18;
+    return (
+      <text
+        x={cx}
+        y={cy}
+        textAnchor="middle"
+        fontSize={12}
+        fontWeight={700}
+        fill="#fff"
+      >
+        {value}%
+      </text>
+    );
+  };
+
+  // Tooltip kustom: tampilkan percent (series) + count (lookup dari statusBreakdown)
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (!active || !payload?.length) return null;
+    const item = payload[0]; // bar yang sedang dihover
+    const name = item.payload.name as keyof Summary["statusBreakdown"]; // Cast sebagai key yang valid
+    const percent = item.value as number;
+    const count = statusBreakdown[name].count;
+
+    return (
+      <div className="rounded-md border bg-white px-3 py-2 shadow">
+        <div className="font-semibold mb-1">{name}</div>
+        <div>Percent: {percent}%</div>
+        <div>Count: {count}</div>
+      </div>
+    );
+  };
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         className="pb-5"
-        width={100}
-        height={500}
         data={chartData}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
         {/* <XAxis dataKey="name" /> */}
-        {/* <YAxis /> */}
-        <Tooltip />
+        {/* <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} /> */}
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
+
         <Bar
-          dataKey="pending"
+          dataKey="PENDING"
           fill="#E1582A"
           radius={[5, 5, 5, 5]}
           barSize={48}
         >
           <LabelList
-            dataKey="pending"
+            dataKey="PENDING"
             position="insideTop"
-            formatter={(label: React.ReactNode) => `${label}%`}
-            // gunakan content kustom agar warna & gaya sesuai
-            content={(props) => {
-              const { x = 0, y = 0, width = 0, value } = props as any;
-              const cx = x + width / 2;
-              const cy = y + 20; // padding dari atas bar
-              return (
-                <text
-                  x={cx}
-                  y={cy}
-                  textAnchor="middle"
-                  fontSize={15}
-                  fontWeight={700}
-                  fill="#fff"
-                >
-                  {value}%
-                </text>
-              );
-            }}
+            content={<LabelInside />}
           />
         </Bar>
+
+        <Bar dataKey="PAID" fill="#E1822A" radius={[5, 5, 5, 5]} barSize={48}>
+          <LabelList
+            dataKey="PAID"
+            position="insideTop"
+            content={<LabelInside />}
+          />
+        </Bar>
+
         <Bar
-          dataKey="processing"
-          fill="#E1822A"
+          dataKey="EXPIRED"
+          fill="#8B8B8B"
           radius={[5, 5, 5, 5]}
           barSize={48}
         >
           <LabelList
-            dataKey="processing"
+            dataKey="EXPIRED"
             position="insideTop"
-            formatter={(label: React.ReactNode) => `${label}%`}
-            // gunakan content kustom agar warna & gaya sesuai
-            content={(props) => {
-              const { x = 0, y = 0, width = 0, value } = props as any;
-              const cx = x + width / 2;
-              const cy = y + 20; // padding dari atas bar
-              return (
-                <text
-                  x={cx}
-                  y={cy}
-                  textAnchor="middle"
-                  fontSize={10}
-                  fontWeight={700}
-                  fill="#fff"
-                >
-                  {value}%
-                </text>
-              );
-            }}
+            content={<LabelInside />}
           />
         </Bar>
+
         <Bar
-          dataKey="completed"
+          dataKey="CANCELED"
           fill="#E1B32A"
           radius={[5, 5, 5, 5]}
           barSize={48}
         >
           <LabelList
-            dataKey="completed"
+            dataKey="CANCELED"
             position="insideTop"
-            formatter={(label: React.ReactNode) => `${label}%`}
-            // gunakan content kustom agar warna & gaya sesuai
-            content={(props) => {
-              const { x = 0, y = 0, width = 0, value } = props as any;
-              const cx = x + width / 2;
-              const cy = y + 20; // padding dari atas bar
-              return (
-                <text
-                  x={cx}
-                  y={cy}
-                  textAnchor="middle"
-                  fontSize={15}
-                  fontWeight={700}
-                  fill="#fff"
-                >
-                  {value}%
-                </text>
-              );
-            }}
+            content={<LabelInside />}
           />
         </Bar>
       </BarChart>

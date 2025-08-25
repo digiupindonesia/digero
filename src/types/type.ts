@@ -140,3 +140,14 @@ export type TrendDashboard = {
     count: number;
   }[];
 };
+
+export type TopMember = {
+  rank: number;
+  userId: string;
+  username: string;
+  fullName: string | null;
+  email: string;
+  topupCount: number;
+  totalNominalTopup: number;
+  totalFeeTopup: number;
+};

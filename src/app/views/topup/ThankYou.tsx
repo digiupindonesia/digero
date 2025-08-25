@@ -6,6 +6,7 @@ import IconBCA from "@/assets/img/bca.png";
 import { TopUp } from "@/types/type";
 import { useAuthStore } from "@/stores/useAuthStore";
 import formatCurrency from "@/utils/formatCurrency";
+import Link from "next/link";
 
 const dataPaymentMethod = {
   BCA: {
@@ -25,6 +26,8 @@ const dataPaymentMethod = {
 type ThankYouProps = {
   data: TopUp;
 };
+
+const CS_NUMBER = process.env.NEXT_PUBLIC_CS_NUMBER;
 
 export default function ThankYou({ data }: ThankYouProps) {
   const { auth } = useAuthStore();
@@ -81,9 +84,13 @@ export default function ThankYou({ data }: ThankYouProps) {
               <p className="text-lg leading-relaxed">
                 Bila sudah melakukan pembayaran silahkan tunggu atau untuk
                 proses lebih cepat bisa hub cs kami dengan klik{" "}
-                <a href="/kontak" className="text-yellow-500 underline">
+                <Link
+                  href={`https://wa.me/${CS_NUMBER}`}
+                  target="_blank"
+                  className="text-yellow-500 underline"
+                >
                   disini
-                </a>
+                </Link>
               </p>
             </div>
           </div>
