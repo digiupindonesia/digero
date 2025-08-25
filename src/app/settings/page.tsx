@@ -304,25 +304,27 @@ const Page = () => {
                 </div>
               </>
             )}
-            <Button
-              disabled={
-                isLoading ||
-                strength < 80 ||
-                !password.newPassword ||
-                !password.oldPassword
-              }
-              onClick={() => updatePassword()}
-              className={`flex items-center gap-2 bg-red-700 hover:bg-red-800 w-full md:col-span-2 justify-self-end place-self-end text-white p-2 rounded ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {isLoading ? (
-                <AiOutlineLoading3Quarters className="animate-spin" />
-              ) : (
-                <FaLock />
-              )}
-              Ganti Password
-            </Button>
+            {auth?.user.role === "ADMIN" && (
+              <Button
+                disabled={
+                  isLoading ||
+                  strength < 80 ||
+                  !password.newPassword ||
+                  !password.oldPassword
+                }
+                onClick={() => updatePassword()}
+                className={`flex items-center gap-2 bg-red-700 hover:bg-red-800 w-full md:col-span-2 justify-self-end place-self-end text-white p-2 rounded ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {isLoading ? (
+                  <AiOutlineLoading3Quarters className="animate-spin" />
+                ) : (
+                  <FaLock />
+                )}
+                Ganti Password
+              </Button>
+            )}
             <Button
               disabled={isLoading}
               onClick={() => updateProfile()}
