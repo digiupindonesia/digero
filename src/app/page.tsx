@@ -35,6 +35,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FaWhatsapp } from "react-icons/fa";
+import { validatePasswordMatch } from "@/utils/validateTwoInputs";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const URL_REGISTER_USER_POST = `${API_URL}/api/v1/auth/register`;
@@ -106,6 +107,13 @@ export default function Home() {
 
   const onSubmitRegister: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+
+    if (
+      !validatePasswordMatch(registerForm.password, registerForm.confirmPass)
+    ) {
+      return;
+    }
+
     try {
       setIsLoading(true);
       const response = await axios.post(URL_REGISTER_USER_POST, {
