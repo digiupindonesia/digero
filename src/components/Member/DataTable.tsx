@@ -35,12 +35,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Member } from "@/types/type";
 import { useOpenModal } from "@/stores/openModal";
+import { TfiReload } from "react-icons/tfi";
 
 interface DataTableProps {
   columns: ColumnDef<Member, any>[];
   data: Member[];
   rowSelection?: Record<string, boolean>;
   setRowSelection?: (selection: Record<string, boolean>) => void;
+  getMember: () => void;
+  isLoading?: boolean;
 }
 
 export function DataTable({
@@ -48,11 +51,12 @@ export function DataTable({
   data,
   rowSelection,
   setRowSelection,
+  getMember,
+  isLoading
 }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const { toggle, open } = useOpenModal();
 
   const table = useReactTable({
     data,
@@ -106,6 +110,12 @@ export function DataTable({
   return (
     <>
       <div className="w-full flex gap-2 items-center justify-end pb-4">
+        <Button
+          onClick={getMember}
+          className="bg-white border hover:bg-zinc-100 transition-all"
+        >
+          <TfiReload className={`text-black ${isLoading && "animate-spin"}`} />
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

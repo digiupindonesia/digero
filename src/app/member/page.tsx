@@ -46,6 +46,7 @@ export default function Page() {
     data,
     reset,
   } = useOpenModal();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { auth, isHydrated } = useAuthStore();
   const [members, setMembers] = useState<Member[]>([]);
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
@@ -81,6 +82,7 @@ export default function Page() {
   };
 
   const getMember = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(`${GET_MEMBERS}`, {
         headers: {
@@ -89,9 +91,11 @@ export default function Page() {
       });
 
       if (response.status === 200) {
+        setIsLoading(false);
         setMembers(response.data.data);
       }
     } catch (error: any) {
+      setIsLoading(false);
       notify.error("Error fetching members");
       console.error("Error fetching members:", error);
     }
@@ -242,6 +246,8 @@ export default function Page() {
               setRowSelection={setRowSelection}
               columns={columns}
               data={members as Member[]}
+              getMember={getMember}
+              isLoading={isLoading}
             />
           </div>
         </ContainerComponent>
