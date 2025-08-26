@@ -29,6 +29,8 @@ import strengthText from "@/utils/strengthText";
 import calcStrength from "@/utils/calcStrength";
 import strengthColor from "@/utils/strengthColor";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import SelectWithIcon from "@/components/Select";
+import { HiOutlineBadgeCheck } from "react-icons/hi";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_PROFILE_GET = `${API_URL}/api/v1/profile/me`;
@@ -37,6 +39,69 @@ const CHANGE_PASSWORD_PUT = `${API_URL}/api/v1/profile/me/password`;
 const CHANGE_FEE_PUT = `${API_URL}/api/v1/admin/settings/fee`;
 const GET_FEE_ADMIN = `${API_URL}/api/v1/admin/settings/fee`;
 const POST_WOOWA_API_KEYS = `${API_URL}/api/v1/woowa-api-keys`;
+
+const BankOptions = [
+  {
+    title: "Mandiri",
+    value: "MANDIRI",
+    icon: IconMandiri,
+  },
+  {
+    title: "BCA",
+    value: "BCA",
+    icon: IconBCA,
+  },
+  {
+    title: "BRI",
+    value: "BRI",
+    icon: IconMandiri,
+  },
+  {
+    title: "BNI",
+    value: "BNI",
+    icon: IconMandiri,
+  },
+  {
+    title: "BTN",
+    value: "BTN",
+    icon: IconMandiri,
+  },
+  {
+    title: "CIMB Niaga",
+    value: "CIMB_NIAGA",
+    icon: IconMandiri,
+  },
+  {
+    title: "Danamon",
+    value: "DANAMON",
+    icon: IconMandiri,
+  },
+  {
+    title: "Permata",
+    value: "PERMATA",
+    icon: IconMandiri,
+  },
+  {
+    title: "Maybank",
+    value: "MAYBANK",
+    icon: IconMandiri,
+  },
+  {
+    title: "OCBC NISP",
+    value: "OCBC_NISP",
+    icon: IconMandiri,
+  },
+  {
+    title: "Panin Bank",
+    value: "PANIN",
+    icon: IconMandiri,
+  },
+  {
+    title: "Bank Mega",
+    value: "MEGA",
+    icon: IconMandiri,
+  },
+];
 
 type Profile = {
   id: string;
@@ -94,13 +159,17 @@ const Page = () => {
 
   const submitWoowaApiKey = async () => {
     try {
-      const response = await axios.post(POST_WOOWA_API_KEYS, {
-        key: woowaApiKey,
-      }, {
-        headers: {
-          Authorization: `Bearer ${auth?.accessToken}`,
+      const response = await axios.post(
+        POST_WOOWA_API_KEYS,
+        {
+          key: woowaApiKey,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
 
       if (response.status === 200 || response.status === 201) {
         notify.success("Woowa API Key added successfully!");
@@ -373,10 +442,27 @@ const Page = () => {
                     <p className="text-base font-normal">Rekening Bank</p>
                   </div>
                   <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
-                    <Input
+                    {/* <Input
                       className="w-full my-1"
                       placeholder="Tambah Rekening Bank"
-                    />
+                    /> */}
+                    <div className="flex flex-col lg:flex-row gap-2 items-start lg:items-center w-full">
+                      <SelectWithIcon
+                        // Icon={HiOutlineBadgeCheck}
+                        options={BankOptions}
+                        getOptionLabel={(option) => option.title}
+                        getOptionValue={(option) => option.value}
+                        className="w-full font-semibold"
+                        placeholder="Pilih Bank"
+                        // onValueChange={(e) =>
+                        //   setTopUp(
+                        //     produce(topUp, (draft) => {
+                        //       draft.accountRequestId = e;
+                        //     })
+                        //   )
+                        // }
+                      />
+                    </div>
                     <Button className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
                       + Rekening
                     </Button>
@@ -458,7 +544,10 @@ const Page = () => {
                         }
                       />
                     </div>
-                    <Button onClick={() => submitWoowaApiKey()} className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded">
+                    <Button
+                      onClick={() => submitWoowaApiKey()}
+                      className="flex items-center gap-2 bg-black w-fit text-white p-2 rounded"
+                    >
                       <FaPlus />
                     </Button>
                   </div>

@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const GET_LIST_REQ_TOPUP = `${API_URL}/api/v1/payment`;
 const POST_MOVE_TO_PAID = `${API_URL}/api/v1/payment/bulk/mark-paid`;
+const POST_MOVE_TO_CANCEL = `${API_URL}/api/v1/payment/bulk/cancel`;
 
 export default function ListReq() {
   const { auth, isHydrated } = useAuthStore();
@@ -74,10 +75,50 @@ export default function ListReq() {
     }
   };
 
+  const handleMoveToCancel = async (id: string) => {
+    const idsArray = Object.keys(rowSelection).filter(
+      (key) => rowSelection[key]
+    );
+
+    // Prioritaskan id dari parameter, jika tidak ada gunakan idsArray
+    const ids = id ? [id] : idsArray;
+
+    // Validasi jika tidak ada ID yang akan diproses
+    if (ids.length === 0) {
+      notify.error("No items to approve");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${POST_MOVE_TO_CANCEL}`,
+        {
+          ids: ids,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Clear selection dan reset global state setelah berhasil
+        setRowSelection({});
+        getListTopUp();
+        notify.success("Status updated successfully");
+      }
+    } catch (error: any) {
+      notify.error("Error moving to cancel.");
+      console.error("Error moving to cancel:", error);
+    }
+  };
+
   const columns = useMemo(
     () =>
       createColumns({
         onPaid: handleMoveToPaid,
+        onCancel: handleMoveToCancel,
       }),
     []
   );
@@ -99,6 +140,7 @@ export default function ListReq() {
             rowSelection={rowSelection}
             setRowSelection={setRowSelection}
             moveToPaid={handleMoveToPaid}
+            moveToCancel={handleMoveToCancel}
             //     getListReqAcc={getListReqAcc}
             //     isLoading={isLoading}
           />

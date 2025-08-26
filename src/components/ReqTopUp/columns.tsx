@@ -19,11 +19,16 @@ import formatCurrency from "@/utils/formatCurrency";
 
 interface ColumnActions {
   onPaid?: (id: string) => void;
+  onCancel?: (id: string) => void
 }
 
 export const createColumns = (actions: ColumnActions): ColumnDef<TopUp>[] => {
   function moveToPaid(id: string) {
     actions.onPaid?.(id);
+  }
+
+  function moveToCancel(id: string) {
+    actions.onCancel?.(id);
   }
 
   return [
@@ -96,6 +101,12 @@ export const createColumns = (actions: ColumnActions): ColumnDef<TopUp>[] => {
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
+              <DropdownMenuItem
+                className="text-red-500"
+                onClick={() => moveToCancel(rowData.id)}
+              >
+                Move to Cancel
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-green-500"
                 onClick={() => moveToPaid(rowData.id)}

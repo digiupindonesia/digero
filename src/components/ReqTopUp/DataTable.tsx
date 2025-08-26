@@ -54,6 +54,7 @@ interface DataTableProps {
   rowSelection: Record<string, boolean>;
   setRowSelection: (selection: Record<string, boolean>) => void;
   moveToPaid: (id: string) => void;
+  moveToCancel: (id: string) => void;
 }
 
 export function DataTable({
@@ -62,6 +63,7 @@ export function DataTable({
   rowSelection,
   setRowSelection,
   moveToPaid,
+  moveToCancel
 }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -271,20 +273,24 @@ export function DataTable({
           <DropdownMenuContent>
             <DropdownMenuLabel>Action</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem
-              onClick={() => setStatusFilter("pending")}
-              className={statusFilter === "pending" ? "bg-gray-100" : ""}
-            >
-              Pending
-            </DropdownMenuItem> */}
-            {/* <DropdownMenuItem
-              // onClick={() => setStatusFilter("processing")}
+            <DropdownMenuItem
+              onClick={() => {
+                // Ambil selected rows
+                const selectedRows = table.getFilteredSelectedRowModel().rows;
+                if (selectedRows.length > 0) {
+                  // Panggil moveToCancel tanpa parameter, karena akan menggunakan rowSelection
+                  moveToCancel("");
+                } else {
+                  // Jika tidak ada yang dipilih, tampilkan pesan
+                  console.log("No rows selected");
+                }
+              }}
               className={`${
-                statusFilter === "processing" ? "bg-gray-100" : ""
-              } text-yellow-500`}
+                statusFilter === "complete" ? "bg-gray-100" : ""
+              } text-red-500`}
             >
-              Move to Processing
-            </DropdownMenuItem> */}
+              Move to Cancel
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 // Ambil selected rows
