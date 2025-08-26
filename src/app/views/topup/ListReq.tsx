@@ -18,8 +18,10 @@ export default function ListReq() {
   const { auth, isHydrated } = useAuthStore();
   const [listReqTopUp, setListReqTopUp] = useState<TopUp[]>([]);
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const getListTopUp = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(GET_LIST_REQ_TOPUP, {
         headers: {
@@ -28,9 +30,11 @@ export default function ListReq() {
       });
 
       if (response.status === 200) {
+        setIsLoading(false);
         setListReqTopUp(response.data.data);
       }
     } catch (error: any) {
+      setIsLoading(false);
       notify.error("Error fetching top-up requests.");
       console.log("Error fetching top-up requests:", error);
     }
@@ -141,8 +145,8 @@ export default function ListReq() {
             setRowSelection={setRowSelection}
             moveToPaid={handleMoveToPaid}
             moveToCancel={handleMoveToCancel}
-            //     getListReqAcc={getListReqAcc}
-            //     isLoading={isLoading}
+            getListTopUp={getListTopUp}
+            isLoading={isLoading}
           />
         </div>
       </ContainerComponent>

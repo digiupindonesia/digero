@@ -47,6 +47,7 @@ import { MdAccessTime } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { FaCheckDouble } from "react-icons/fa6";
 import { MdOutlineFilterList } from "react-icons/md";
+import { TfiReload } from "react-icons/tfi";
 
 interface DataTableProps {
   columns: ColumnDef<TopUp>[];
@@ -55,6 +56,8 @@ interface DataTableProps {
   setRowSelection: (selection: Record<string, boolean>) => void;
   moveToPaid: (id: string) => void;
   moveToCancel: (id: string) => void;
+  getListTopUp: () => void;
+  isLoading: boolean;
 }
 
 export function DataTable({
@@ -63,7 +66,9 @@ export function DataTable({
   rowSelection,
   setRowSelection,
   moveToPaid,
-  moveToCancel
+  moveToCancel,
+  getListTopUp,
+  isLoading,
 }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -225,6 +230,12 @@ export function DataTable({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <Button
+          onClick={getListTopUp}
+          className="bg-white border hover:bg-zinc-100 transition-all"
+        >
+          <TfiReload className={`text-black ${isLoading && "animate-spin"}`} />
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -257,10 +268,13 @@ export function DataTable({
             className="w-full py-0"
             placeholder="Filter tanggal order..."
             value={
-              (table.getColumn("user.username")?.getFilterValue() as string) ?? ""
+              (table.getColumn("user.username")?.getFilterValue() as string) ??
+              ""
             }
             onChange={(event) =>
-              table.getColumn("user.username")?.setFilterValue(event.target.value)
+              table
+                .getColumn("user.username")
+                ?.setFilterValue(event.target.value)
             }
           />
         </div>
