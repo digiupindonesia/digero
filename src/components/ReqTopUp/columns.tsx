@@ -74,13 +74,13 @@ export const createColumns = (actions: ColumnActions): ColumnDef<TopUp>[] => {
       id: "user.username", // Tambahkan id yang eksplisit
       header: "Member",
       cell: ({ row }) => {
-        return row.original.status === "PAID" ? (
-          <p>{row.original.user.username}</p>
-        ) : (
+        return row.original.status === "CANCELED" ? (
           <div className="flex items-center gap-2">
             <p>{row.original.user.username}</p>
             <Badge variant="destructive">Canceled</Badge>
           </div>
+        ) : (
+          <p>{row.original.user.username}</p>
         );
       },
     },

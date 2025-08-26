@@ -91,8 +91,8 @@ export function DataTable({
       ALL: data.length,
       PENDING: data.filter((item) => item.status === "PENDING").length,
       PAID: data.filter((item) => item.status === "PAID").length,
+      COMPLETE: data.filter((item) => item.status === "COMPLETE").length,
       CANCELED: data.filter((item) => item.status === "CANCELED").length,
-      EXPIRED: data.filter((item) => item.status === "EXPIRED").length,
     };
   }, [data]);
 
@@ -167,6 +167,17 @@ export function DataTable({
           </MenubarMenu>
           <MenubarMenu>
             <MenubarTrigger
+              onClick={() => handleStatusFilter("EXPIRED")}
+              className={`${
+                statusFilter === "EXPIRED" ? "text-yellow-500" : ""
+              } flex items-center gap-1`}
+            >
+              <IoIosWarning className="text-lg hidden 2xl:flex" />
+              Complete ({statusCounts.COMPLETE})
+            </MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger
               onClick={() => handleStatusFilter("CANCELED")}
               className={`${
                 statusFilter === "CANCELED" ? "text-yellow-500" : ""
@@ -174,17 +185,6 @@ export function DataTable({
             >
               <TbCancel className="text-lg hidden 2xl:flex" />
               Canceled ({statusCounts.CANCELED})
-            </MenubarTrigger>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger
-              onClick={() => handleStatusFilter("EXPIRED")}
-              className={`${
-                statusFilter === "EXPIRED" ? "text-yellow-500" : ""
-              } flex items-center gap-1`}
-            >
-              <IoIosWarning className="text-lg hidden 2xl:flex" />
-              Expired ({statusCounts.EXPIRED})
             </MenubarTrigger>
           </MenubarMenu>
         </Menubar>
@@ -365,7 +365,7 @@ export function DataTable({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
                 const isCanceled =
-                  (row.original.status as string) === "CANCELED";
+                  (row.original.status) === "CANCELED";
 
                 return (
                   <TableRow

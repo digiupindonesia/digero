@@ -52,7 +52,7 @@ export function DataTable({
   rowSelection,
   setRowSelection,
   getMember,
-  isLoading
+  isLoading,
 }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -109,74 +109,90 @@ export function DataTable({
 
   return (
     <>
-      <div className="w-full flex gap-2 items-center justify-end pb-4">
-        <Button
-          onClick={getMember}
-          className="bg-white border hover:bg-zinc-100 transition-all"
-        >
-          <TfiReload className={`text-black ${isLoading && "animate-spin"}`} />
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Views
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <div className="max-w-sm">
-          <InputComponent
-            Icon={FaSearch}
-            className="w-full py-0"
-            placeholder="Filter emails..."
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
-            }
-          />
+      <div className="w-full flex gap-2 items-center justify-between pb-4">
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={getMember}
+            className="bg-white border hover:bg-zinc-100 transition-all"
+          >
+            <TfiReload
+              className={`text-black ${isLoading && "animate-spin"}`}
+            />
+          </Button>
+          <Button
+            onClick={getMember}
+            className="bg-white border hover:bg-zinc-100 transition-all"
+          >
+            <TfiReload
+              className={`text-black ${isLoading && "animate-spin"}`}
+            />
+          </Button>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <div className="flex items-center p-2 rounded bg-black cursor-pointer mx-auto">
-              <FaLocationArrow className="cursor-pointer text-white" />
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              className="text-green-500"
-              onClick={openModalActivate}
-            >
-              Activate
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-red-500"
-              onClick={openModalSuspend}
-            >
-              Suspend
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={openModalChangeFee}>
-              Ubah Fee
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="">
+                Views
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div className="max-w-sm">
+            <InputComponent
+              Icon={FaSearch}
+              className="w-full py-0"
+              placeholder="Filter emails..."
+              value={
+                (table.getColumn("email")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn("email")?.setFilterValue(event.target.value)
+              }
+            />
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div className="flex items-center p-2 rounded bg-black cursor-pointer mx-auto">
+                <FaLocationArrow className="cursor-pointer text-white" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem
+                className="text-green-500"
+                onClick={openModalActivate}
+              >
+                Activate
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-red-500"
+                onClick={openModalSuspend}
+              >
+                Suspend
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={openModalChangeFee}>
+                Ubah Fee
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
