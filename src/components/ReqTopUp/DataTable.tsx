@@ -12,6 +12,9 @@ import {
   VisibilityState,
   getPaginationRowModel,
 } from "@tanstack/react-table";
+import { TbCancel } from "react-icons/tb";
+import { IoIosWarning } from "react-icons/io";
+
 import { Input } from "@/components/ui/input";
 import InputComponent from "@/components/Input";
 import {
@@ -73,7 +76,7 @@ export function DataTable({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
   // Filter data berdasarkan status dengan useMemo untuk optimasi
   const filteredData = useMemo(() => {
@@ -136,7 +139,7 @@ export function DataTable({
                 statusFilter === "ALL" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
-              <MdOutlineFilterList className="text-lg" />
+              <MdOutlineFilterList className="text-lg hidden 2xl:flex" />
               All ({statusCounts.ALL})
             </MenubarTrigger>
           </MenubarMenu>
@@ -147,7 +150,7 @@ export function DataTable({
                 statusFilter === "PENDING" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
-              <MdAccessTime className="text-lg" />
+              <MdAccessTime className="text-lg hidden 2xl:flex" />
               Pending ({statusCounts.PENDING})
             </MenubarTrigger>
           </MenubarMenu>
@@ -158,7 +161,7 @@ export function DataTable({
                 statusFilter === "PAID" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
-              <FaCheckDouble className="text-lg" />
+              <FaCheckDouble className="text-lg hidden 2xl:flex" />
               Paid ({statusCounts.PAID})
             </MenubarTrigger>
           </MenubarMenu>
@@ -169,7 +172,7 @@ export function DataTable({
                 statusFilter === "CANCELED" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
-              <FaCheck className="text-lg" />
+              <TbCancel className="text-lg hidden 2xl:flex" />
               Canceled ({statusCounts.CANCELED})
             </MenubarTrigger>
           </MenubarMenu>
@@ -180,7 +183,7 @@ export function DataTable({
                 statusFilter === "EXPIRED" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
-              <FaCheck className="text-lg" />
+              <IoIosWarning className="text-lg hidden 2xl:flex" />
               Expired ({statusCounts.EXPIRED})
             </MenubarTrigger>
           </MenubarMenu>
@@ -361,7 +364,8 @@ export function DataTable({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
-                const isCanceled = (row.original.status as string) === "CANCELED";
+                const isCanceled =
+                  (row.original.status as string) === "CANCELED";
 
                 return (
                   <TableRow
