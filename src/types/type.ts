@@ -113,7 +113,7 @@ export interface TopUp {
   subtotal: number;
   total: number;
   paymentMethod: PaymentMethod; // bisa dibuat enum: "BCA" | "MANDIRI" | "BNI" dsb.
-  status: "PENDING" | "PAID" | "EXPIRED"; // disesuaikan dengan sistem Anda
+  status: "PENDING" | "PAID" | "EXPIRED" | "CANCELED"; // disesuaikan dengan sistem Anda
   paidAt: string | null; // ISO date string atau null
   expiredAt: string; // ISO date string
   createdAt: string; // ISO date string

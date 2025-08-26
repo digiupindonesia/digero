@@ -16,10 +16,11 @@ import {
 import { LuArrowUpDown } from "react-icons/lu";
 import { Checkbox } from "@/components/ui/checkbox";
 import formatCurrency from "@/utils/formatCurrency";
+import { Badge } from "../ui/badge";
 
 interface ColumnActions {
   onPaid?: (id: string) => void;
-  onCancel?: (id: string) => void
+  onCancel?: (id: string) => void;
 }
 
 export const createColumns = (actions: ColumnActions): ColumnDef<TopUp>[] => {
@@ -72,6 +73,16 @@ export const createColumns = (actions: ColumnActions): ColumnDef<TopUp>[] => {
       accessorKey: "user.username",
       id: "user.username", // Tambahkan id yang eksplisit
       header: "Member",
+      cell: ({ row }) => {
+        return row.original.status === "PAID" ? (
+          <p>{row.original.user.username}</p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <p>{row.original.user.username}</p>
+            <Badge variant="destructive">Canceled</Badge>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "accountRequest.accountName",

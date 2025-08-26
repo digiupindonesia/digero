@@ -77,7 +77,7 @@ export function DataTable({
 
   // Filter data berdasarkan status dengan useMemo untuk optimasi
   const filteredData = useMemo(() => {
-    return statusFilter === "all"
+    return statusFilter === "ALL"
       ? data
       : data.filter((item) => item.status === statusFilter);
   }, [data, statusFilter]);
@@ -85,10 +85,11 @@ export function DataTable({
   // Hitung jumlah data untuk setiap status dengan useMemo untuk optimasi
   const statusCounts = useMemo(() => {
     return {
-      all: data.length,
+      ALL: data.length,
       PENDING: data.filter((item) => item.status === "PENDING").length,
       PAID: data.filter((item) => item.status === "PAID").length,
-      // COMPLETE: data.filter((item) => item.status === "COMPLETE").length,
+      CANCELED: data.filter((item) => item.status === "CANCELED").length,
+      EXPIRED: data.filter((item) => item.status === "EXPIRED").length,
     };
   }, [data]);
 
@@ -130,46 +131,57 @@ export function DataTable({
         <Menubar className="hidden lg:flex">
           <MenubarMenu>
             <MenubarTrigger
-              onClick={() => handleStatusFilter("all")}
+              onClick={() => handleStatusFilter("ALL")}
               className={`${
-                statusFilter === "all" ? "text-yellow-500" : ""
+                statusFilter === "ALL" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
               <MdOutlineFilterList className="text-lg" />
-              All ({statusCounts.all})
+              All ({statusCounts.ALL})
             </MenubarTrigger>
           </MenubarMenu>
           <MenubarMenu>
             <MenubarTrigger
-              onClick={() => handleStatusFilter("pending")}
+              onClick={() => handleStatusFilter("PENDING")}
               className={`${
-                statusFilter === "pending" ? "text-yellow-500" : ""
+                statusFilter === "PENDING" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
               <MdAccessTime className="text-lg" />
               Pending ({statusCounts.PENDING})
             </MenubarTrigger>
           </MenubarMenu>
-          {/* <MenubarMenu>
-            <MenubarTrigger
-              onClick={() => handleStatusFilter("processing")}
-              className={`${
-                statusFilter === "processing" ? "text-yellow-500" : ""
-              } flex items-center gap-1`}
-            >
-              <FaCheck className="text-lg" />
-              Processing ({statusCounts.processing})
-            </MenubarTrigger>
-          </MenubarMenu> */}
           <MenubarMenu>
             <MenubarTrigger
-              onClick={() => handleStatusFilter("complete")}
+              onClick={() => handleStatusFilter("PAID")}
               className={`${
-                statusFilter === "complete" ? "text-yellow-500" : ""
+                statusFilter === "PAID" ? "text-yellow-500" : ""
               } flex items-center gap-1`}
             >
               <FaCheckDouble className="text-lg" />
               Paid ({statusCounts.PAID})
+            </MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger
+              onClick={() => handleStatusFilter("CANCELED")}
+              className={`${
+                statusFilter === "CANCELED" ? "text-yellow-500" : ""
+              } flex items-center gap-1`}
+            >
+              <FaCheck className="text-lg" />
+              Canceled ({statusCounts.CANCELED})
+            </MenubarTrigger>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger
+              onClick={() => handleStatusFilter("EXPIRED")}
+              className={`${
+                statusFilter === "EXPIRED" ? "text-yellow-500" : ""
+              } flex items-center gap-1`}
+            >
+              <FaCheck className="text-lg" />
+              Expired ({statusCounts.EXPIRED})
             </MenubarTrigger>
           </MenubarMenu>
         </Menubar>
@@ -189,7 +201,7 @@ export function DataTable({
                 <MdOutlineFilterList className="mr-2 text-lg" />
                 <span className="flex-1">All</span>
                 <span className="text-muted-foreground">
-                  ({statusCounts.all})
+                  ({statusCounts.ALL})
                 </span>
               </DropdownMenuItem>
 
@@ -349,10 +361,18 @@ export function DataTable({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
+                const isCanceled = (row.original.status as string) === "CANCELED";
+
                 return (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    aria-disabled={isCanceled}
+                    className={`${
+                      isCanceled
+                        ? "bg-red-100 text-red-500 hover:bg-red-100"
+                        : "hover:bg-gray-100"
+                    }  cursor-pointer`}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
